@@ -1,24 +1,30 @@
 package access.rights.rest.api.product;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Product {
 
-    public int id;
+    @Id
+    public Integer id;
     public String name;
     public double price;
-    public int stockAvailability;
+    public int stock;
 
-    public Product(int id, String name, double price, int stockAvailability) {
+    public Product() { }
+    public Product(Integer id, String name, double price, int stock) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.stockAvailability = stockAvailability;
+        this.stock = stock;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -38,11 +44,11 @@ public class Product {
         this.price = price;
     }
 
-    public int getStockAvailability() {
-        return stockAvailability;
+    public int getStock() {
+        return stock;
     }
 
-    public void setStockAvailability(int stockAvailability) {
-        this.stockAvailability = stockAvailability;
+    public void setStock(Integer stock) {
+        this.stock = stock;
     }
 }

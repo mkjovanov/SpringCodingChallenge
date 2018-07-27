@@ -1,20 +1,38 @@
 package access.rights.rest.api.product;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
 public class ProductController {
 
-    @RequestMapping("/product")
+    @Autowired
+    private ProductService productService;
+
+    @RequestMapping("/products")
     public List<Product> getAllProducts() {
-        return Arrays.asList(
-                new Product(1, "Elektromotor", 550.00, 5),
-                new Product(2, "Energetski kabel", 100.00, 8),
-                new Product(3, "Osigurac", 20.00, 120)
-        );
+        return productService.getAllProducts();
+    }
+
+    @RequestMapping("/products/{id}")
+    public Product getProduct(@PathVariable Integer id) {
+        return productService.getProduct(id);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/products")
+    public void addNewProduct(@RequestBody Product product) {
+        productService.addProduct(product);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/products/{id}")
+    public void updateProduct(@RequestBody Product updatedProduct) {
+        productService.updateProduct(updatedProduct);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/products/{id}")
+    public void deleteProduct(@PathVariable("id") Integer id) {
+        productService.deleteProduct(id);
     }
 }
