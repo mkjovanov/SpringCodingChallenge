@@ -1,22 +1,28 @@
 package access.rights.rest.api.employee;
 
-public class Employee {
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
-    public int id;
+@Entity
+public final class Employee {
+
+    @Id
+    public Integer id;
     public String firstName;
     public String lastName;
 
+    public Employee(){}
     public Employee(int id, String firstName, String lastName) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
