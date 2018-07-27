@@ -1,5 +1,6 @@
 package access.rights.rest.api.employee;
 
+import access.rights.rest.api.organization.Organization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,27 +12,29 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
-    @RequestMapping("/employees")
-    public List<Employee> getAllEmployees() {
-        return employeeService.getAllEmployees();
+    @RequestMapping("/organizations/{organizationId}/employees")
+    public List<Employee> getAllEmployees(@PathVariable Integer organizationId) {
+        return employeeService.getAllEmployees(organizationId);
     }
 
-    @RequestMapping("/employees/{id}")
-    public Employee getEmployee(@PathVariable("id") Integer id) {
+    @RequestMapping("/organizations/{organizationId}/employees/{id}")
+    public Employee getEmployee(@PathVariable Integer id) {
         return employeeService.getEmployee(id);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/employees")
-    public void addEmployee(@RequestBody Employee newEmployee) {
+    @RequestMapping(method = RequestMethod.POST, value = "/organizations/{organizationId}/employees")
+    public void addEmployee(@PathVariable Integer organizationId, @RequestBody Employee newEmployee) {
+        newEmployee.setOrganization(new Organization(organizationId, ""));
         employeeService.addEmployee(newEmployee);
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/employees/{id}")
-    public void updateEmployee(@RequestBody Employee updatedEmployee) {
+    @RequestMapping(method = RequestMethod.PUT, value = "/organizations/{organizationId}/employees/{id}")
+    public void updateEmployee(@PathVariable Integer organizationId, @RequestBody Employee updatedEmployee) {
+        updatedEmployee.setOrganization(new Organization(organizationId, ""));
         employeeService.updateEmployee(updatedEmployee);
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/employees/{id}")
+    @RequestMapping(method = RequestMethod.DELETE, value = "/organizations/{organizationId}/employees/{id}")
     public void deleteEmployee(@PathVariable("id") Integer id) {
         employeeService.deleteEmployee(id);
     }

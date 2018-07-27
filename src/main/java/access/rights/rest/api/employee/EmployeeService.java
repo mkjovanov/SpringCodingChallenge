@@ -13,9 +13,11 @@ public class EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    public List<Employee> getAllEmployees() {
+    public List<Employee> getAllEmployees(Integer organizationId) {
         List<Employee> employees = new ArrayList<>();
-        employeeRepository.findAll().forEach(employees::add);
+        employeeRepository
+                .findByOrganizationId(organizationId)
+                .forEach(employees::add);
         return employees;
     }
 
