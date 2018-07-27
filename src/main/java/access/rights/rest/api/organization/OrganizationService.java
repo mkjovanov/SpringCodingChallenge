@@ -1,5 +1,6 @@
 package access.rights.rest.api.organization;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -9,6 +10,9 @@ import java.util.List;
 @Service
 public class OrganizationService {
 
+    @Autowired
+    private OrganizationRepository organizationRepository;
+
     private List<Organization> organizations =
             new ArrayList<>(Arrays.asList(
                 new Organization(1, "A"),
@@ -17,25 +21,24 @@ public class OrganizationService {
             ));
 
     public List<Organization> getAllOrganizations() {
-        return organizations;
+        List<Organization> employees = new ArrayList<>();
+        organizationRepository.findAll().forEach(employees::add);
+        return employees;
     }
 
-    public Organization getOrganization(int id) {
-        return organizations.stream().filter(o -> o.getId() == id).findFirst().get();
+    public Organization getOrganization(Integer id) {
+        return organizationRepository.findById(id).get();
     }
 
-    public void addOrganization(Organization organization) {
-        organizations.add(organization);
+    public void addOrganization(Organization newEmployee) {
+        organizationRepository.save(newEmployee);
     }
 
-    public void updateOrganization(int id, Organization organization) {
-        for (int i = 0; i < organizations.size(); i++) {
-            Organization o = organizations.get(i);
-            if(o.getId() == id) {
-                organizations.set(i, organization);
-                return;
-            }
-        }
+    public void updateOrganization(Organization updatedEmployee) {
+        organizationRepository.save(updatedEmployee);
     }
 
+    public void deleteOrganization(Integer id) {
+        organizationRepository.deleteById(id);
+    }
 }

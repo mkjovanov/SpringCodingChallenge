@@ -1,27 +1,26 @@
 package access.rights.rest.api.organization;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+@Entity
 public class Organization {
 
-    public int id;
+    @Id
+    public Integer id;
     public String name;
 
-    public Organization() {
-    }
-    public Organization(int id, String name) {
+    public Organization() { }
+    public Organization(Integer id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

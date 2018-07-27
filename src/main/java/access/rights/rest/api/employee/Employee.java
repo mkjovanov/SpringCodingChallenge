@@ -11,7 +11,8 @@ public final class Employee {
     public String firstName;
     public String lastName;
 
-    public Employee(){}
+    public Employee(){
+    }
     public Employee(int id, String firstName, String lastName) {
         this.id = id;
         this.firstName = firstName;
