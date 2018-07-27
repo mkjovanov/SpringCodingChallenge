@@ -17,12 +17,22 @@ public class EmployeeController {
     }
 
     @RequestMapping("/employees/{id}")
-    public Employee getEmployee(@PathVariable("id") int id) {
+    public Employee getEmployee(@PathVariable("id") Integer id) {
         return employeeService.getEmployee(id);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/employees")
     public void addEmployee(@RequestBody Employee newEmployee) {
         employeeService.addEmployee(newEmployee);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/employees/{id}")
+    public void updateEmployee(@RequestBody Employee updatedEmployee) {
+        employeeService.updateEmployee(updatedEmployee);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/employees/{id}")
+    public void deleteEmployee(@PathVariable("id") Integer id) {
+        employeeService.deleteEmployee(id);
     }
 }

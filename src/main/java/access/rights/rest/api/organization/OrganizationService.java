@@ -13,13 +13,6 @@ public class OrganizationService {
     @Autowired
     private OrganizationRepository organizationRepository;
 
-    private List<Organization> organizations =
-            new ArrayList<>(Arrays.asList(
-                new Organization(1, "A"),
-                new Organization(2, "B"),
-                new Organization(3, "C")
-            ));
-
     public List<Organization> getAllOrganizations() {
         List<Organization> employees = new ArrayList<>();
         organizationRepository.findAll().forEach(employees::add);

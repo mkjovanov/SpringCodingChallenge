@@ -13,12 +13,6 @@ public class EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    private List<Employee> employees = new ArrayList<>(Arrays.asList(
-                new Employee(1, "Pera", "Peric"),
-                new Employee(2, "Mika", "Mikic"),
-                new Employee(3, "Zora", "Zoric"))
-            );
-
     public List<Employee> getAllEmployees() {
         List<Employee> employees = new ArrayList<>();
         employeeRepository.findAll().forEach(employees::add);
