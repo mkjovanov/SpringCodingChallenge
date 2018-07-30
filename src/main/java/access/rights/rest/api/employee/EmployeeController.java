@@ -18,7 +18,7 @@ public class EmployeeController {
     }
 
     @RequestMapping("/organizations/{organizationId}/employees/{id}")
-    public Employee getEmployee(@PathVariable Integer id) {
+    public Employee getEmployee(@PathVariable("id") Integer id) {
         return employeeService.getEmployee(id);
     }
 
