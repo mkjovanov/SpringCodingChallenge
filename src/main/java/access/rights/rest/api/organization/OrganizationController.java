@@ -28,8 +28,8 @@ public class OrganizationController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/organizations/{id}")
-    public void updateOrganization(@RequestBody Organization updatedOrganizaion) {
-        organizationService.updateOrganization(updatedOrganizaion);
+    public void updateOrganization(@RequestBody Organization updatedOrganization) {
+        organizationService.updateOrganization(updatedOrganization);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/organizations/{id}")

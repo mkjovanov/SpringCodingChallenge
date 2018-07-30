@@ -7,8 +7,8 @@ import javax.persistence.Id;
 public class Organization {
 
     @Id
-    public Integer id;
-    public String name;
+    private Integer id;
+    private String name;
 
     public Organization() { }
     public Organization(Integer id, String name) {

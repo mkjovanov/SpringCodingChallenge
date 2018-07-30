@@ -11,9 +11,11 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public List<Product> getAllProducts() {
+    public List<Product> getAllProducts(Integer organizationId) {
         List<Product> products = new ArrayList<>();
-        productRepository.findAll().forEach(products::add);
+        productRepository
+                .findByOrganizationId(organizationId)
+                .forEach(products::add);
         return products;
     }
 
