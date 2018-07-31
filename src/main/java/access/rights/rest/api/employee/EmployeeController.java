@@ -28,6 +28,12 @@ public class EmployeeController {
         employeeService.addEmployee(newEmployee);
     }
 
+    @RequestMapping(method = RequestMethod.PATCH, value = "/organizations/{organizationId}/employees")
+    public void addNewEmployeeList(@PathVariable Integer organizationId, @RequestBody List<Employee> employeeList) {
+        employeeList.forEach(x -> x.setOrganization(new Organization(organizationId, "")));
+        employeeList.forEach(employeeService::addEmployee);
+    }
+
     @RequestMapping(method = RequestMethod.PUT, value = "/organizations/{organizationId}/employees/{id}")
     public void updateEmployee(@PathVariable Integer organizationId, @RequestBody Employee updatedEmployee) {
         updatedEmployee.setOrganization(new Organization(organizationId, ""));

@@ -27,6 +27,11 @@ public class OrganizationController {
         organizationService.addOrganization(organization);
     }
 
+    @RequestMapping(method = RequestMethod.PATCH, value = "/organizations")
+    public void addNewOrganizationList(@RequestBody List<Organization> organizationList) {
+        organizationList.forEach(organizationService::addOrganization);
+    }
+
     @RequestMapping(method = RequestMethod.PUT, value = "/organizations/{id}")
     public void updateOrganization(@RequestBody Organization updatedOrganization) {
         organizationService.updateOrganization(updatedOrganization);

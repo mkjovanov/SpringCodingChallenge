@@ -28,6 +28,12 @@ public class ProductController {
         productService.addProduct(newProduct);
     }
 
+    @RequestMapping(method = RequestMethod.PATCH, value = "/organizations/{organizationId}/products")
+    public void addNewProductList(@PathVariable("organizationId") Integer organizationId, @RequestBody List<Product> productList) {
+        productList.forEach(x -> x.setOrganization(new Organization(organizationId, "")));
+        productList.forEach(productService::addProduct);
+    }
+
     @RequestMapping(method = RequestMethod.PUT, value = "/organizations/{organizationId}/products/{id}")
     public void updateProduct(@PathVariable("organizationId") Integer organizationId, @RequestBody Product updatedProduct) {
         updatedProduct.setOrganization(new Organization(organizationId, ""));
