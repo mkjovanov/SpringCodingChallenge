@@ -1,36 +1,34 @@
 package access.rights.rest.api.organization;
 
+import access.rights.rest.api.organization.repository.OrganizationInMemoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class OrganizationService {
 
     @Autowired
-    private OrganizationRepository organizationRepository;
+    private OrganizationInMemoryRepository organizationRepository;
 
     public List<Organization> getAllOrganizations() {
-        List<Organization> employees = new ArrayList<>();
-        organizationRepository.findAll().forEach(employees::add);
-        return employees;
+        return organizationRepository.getAll();
     }
 
     public Organization getOrganization(Integer id) {
-        return organizationRepository.findById(id).get();
+        return organizationRepository.get(id);
     }
 
-    public void addOrganization(Organization newEmployee) {
-        organizationRepository.save(newEmployee);
+    public void addOrganization(Organization newOrganization) {
+        organizationRepository.add(newOrganization);
     }
 
-    public void updateOrganization(Organization updatedEmployee) {
-        organizationRepository.save(updatedEmployee);
+    public void updateOrganization(Organization updatedOrganization) {
+        organizationRepository.update(updatedOrganization);
     }
 
     public void deleteOrganization(Integer id) {
-        organizationRepository.deleteById(id);
+        organizationRepository.delete(id);
     }
 }

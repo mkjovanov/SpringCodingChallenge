@@ -1,37 +1,34 @@
 package access.rights.rest.api.product;
 
+import access.rights.rest.api.product.repository.ProductInMemoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ProductService {
+
     @Autowired
-    private ProductRepository productRepository;
+    private ProductInMemoryRepository productRepository;
 
     public List<Product> getAllProducts(Integer organizationId) {
-        List<Product> products = new ArrayList<>();
-        productRepository
-                .findByOrganizationId(organizationId)
-                .forEach(products::add);
-        return products;
+        return productRepository.getAllByOrganizationId(organizationId);
     }
 
     public Product getProduct(Integer id) {
-        return productRepository.findById(id).get();
+        return productRepository.get(id);
     }
 
     public void addProduct(Product newProduct) {
-        productRepository.save(newProduct);
+        productRepository.add(newProduct);
     }
 
     public void updateProduct(Product updatedProduct) {
-        productRepository.save(updatedProduct);
+        productRepository.update(updatedProduct);
     }
 
     public void deleteProduct(Integer id) {
-        productRepository.deleteById(id);
+        productRepository.delete(id);
     }
 }

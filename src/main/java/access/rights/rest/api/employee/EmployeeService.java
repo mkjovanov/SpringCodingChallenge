@@ -1,38 +1,34 @@
 package access.rights.rest.api.employee;
 
+import access.rights.rest.api.employee.repository.EmployeeInMemoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class EmployeeService {
 
     @Autowired
-    private EmployeeRepository employeeRepository;
+    private EmployeeInMemoryRepository employeeRepository;
 
     public List<Employee> getAllEmployees(Integer organizationId) {
-        List<Employee> employees = new ArrayList<>();
-        employeeRepository
-                .findByOrganizationId(organizationId)
-                .forEach(employees::add);
-        return employees;
+        return employeeRepository.getAllByOrganizationId(organizationId);
     }
 
     public Employee getEmployee(Integer id) {
-        return employeeRepository.findById(id).get();
+        return employeeRepository.get(id);
     }
 
     public void addEmployee(Employee newEmployee) {
-        employeeRepository.save(newEmployee);
+        employeeRepository.add(newEmployee);
     }
 
     public void updateEmployee(Employee updatedEmployee) {
-        employeeRepository.save(updatedEmployee);
+        employeeRepository.update(updatedEmployee);
     }
 
     public void deleteEmployee(Integer id) {
-        employeeRepository.deleteById(id);
+        employeeRepository.delete(id);
     }
 }

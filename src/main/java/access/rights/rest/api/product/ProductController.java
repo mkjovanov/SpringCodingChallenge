@@ -1,10 +1,12 @@
 package access.rights.rest.api.product;
 
+import access.rights.rest.api.access.right.AccessRight;
 import access.rights.rest.api.organization.Organization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Random;
 
 @RestController
 public class ProductController {
@@ -25,12 +27,16 @@ public class ProductController {
     @RequestMapping(method = RequestMethod.POST, value = "/organizations/{organizationId}/products")
     public void addNewProduct(@PathVariable("organizationId") Integer organizationId, @RequestBody Product newProduct) {
         newProduct.setOrganization(new Organization(organizationId, ""));
+        newProduct.setAccessRight(new AccessRight(true, true, true, true));
         productService.addProduct(newProduct);
     }
 
     @RequestMapping(method = RequestMethod.PATCH, value = "/organizations/{organizationId}/products")
     public void addNewProductList(@PathVariable("organizationId") Integer organizationId, @RequestBody List<Product> productList) {
-        productList.forEach(x -> x.setOrganization(new Organization(organizationId, "")));
+        productList.forEach(x -> {
+            x.setOrganization(new Organization(organizationId, ""));
+            x.setAccessRight(new AccessRight(true, true, true, true));
+        });
         productList.forEach(productService::addProduct);
     }
 

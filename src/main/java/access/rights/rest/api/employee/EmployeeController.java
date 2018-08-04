@@ -2,6 +2,9 @@ package access.rights.rest.api.employee;
 
 import access.rights.rest.api.organization.Organization;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,6 +15,7 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
+    @PreAuthorize("hasRole('ORGANIZATION_3')")
     @RequestMapping("/organizations/{organizationId}/employees")
     public List<Employee> getAllEmployees(@PathVariable Integer organizationId) {
         return employeeService.getAllEmployees(organizationId);

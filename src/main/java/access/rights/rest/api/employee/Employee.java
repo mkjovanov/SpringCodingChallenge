@@ -1,19 +1,16 @@
 package access.rights.rest.api.employee;
 
 import access.rights.rest.api.organization.Organization;
+import access.rights.rest.api.repository.IEntity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+//@Entity
+public class Employee implements IEntity {
 
-@Entity
-public final class Employee {
-
-    @Id
+    //@Id
     private Integer id;
     private String firstName;
     private String lastName;
-    @ManyToOne
+    //@ManyToOne
     private Organization organization;
 
     public Employee(){ }
@@ -21,7 +18,7 @@ public final class Employee {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.organization = new Organization(organizationId, "");
+        this.organization = new Organization(organizationId, "<TO FIX>");
     }
 
     public Integer getId() {

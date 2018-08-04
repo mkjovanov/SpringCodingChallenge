@@ -1,12 +1,11 @@
 package access.rights.rest.api.organization;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import access.rights.rest.api.repository.IEntity;
 
-@Entity
-public class Organization {
+//@Entity
+public class Organization implements IEntity {
 
-    @Id
+    //@Id
     private Integer id;
     private String name;
 
