@@ -12,11 +12,11 @@ public class EmployeeService {
     @Autowired
     private EmployeeInMemoryRepository employeeRepository;
 
-    public List<Employee> getAllEmployees(Integer organizationId) {
+    public List<Employee> getAllEmployees(String organizationId) {
         return employeeRepository.getAllByOrganizationId(organizationId);
     }
 
-    public Employee getEmployee(Integer id) {
+    public Employee getEmployee(String id) {
         return employeeRepository.get(id);
     }
 
@@ -24,11 +24,11 @@ public class EmployeeService {
         employeeRepository.add(newEmployee);
     }
 
-    public void updateEmployee(Employee updatedEmployee) {
-        employeeRepository.update(updatedEmployee);
+    public void updateEmployee(String id, Employee updatedEmployee) {
+        employeeRepository.update(id, updatedEmployee);
     }
 
-    public void deleteEmployee(Integer id) {
+    public void deleteEmployee(String id) {
         employeeRepository.delete(id);
     }
 }

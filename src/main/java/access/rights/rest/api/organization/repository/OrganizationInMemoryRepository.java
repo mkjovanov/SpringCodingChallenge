@@ -12,9 +12,9 @@ import java.util.List;
 public class OrganizationInMemoryRepository extends IRepository<Organization> {
 
     public List<Organization> organizationList = new ArrayList<>(Arrays.asList(
-            new Organization(1, "A"),
-            new Organization(2, "B"),
-            new Organization(3, "C")));
+            new Organization("a", "A"),
+            new Organization("b", "B"),
+            new Organization("c", "C")));
 
     @Override
     public List<Organization> getAll() {
@@ -22,8 +22,8 @@ public class OrganizationInMemoryRepository extends IRepository<Organization> {
     }
 
     @Override
-    public Organization get(Integer id) {
-        return organizationList.stream().filter(e -> e.getId() == id).findFirst().get();
+    public Organization get(String id) {
+        return organizationList.stream().filter(e -> e.getId().equals(id)).findFirst().get();
     }
 
     @Override
@@ -32,10 +32,10 @@ public class OrganizationInMemoryRepository extends IRepository<Organization> {
     }
 
     @Override
-    public void update(Organization updatedOrganization) {
+    public void update(String id, Organization updatedOrganization) {
         for(int i = 0; i < organizationList.size(); i++) {
-            Organization e = organizationList.get(i);
-            if(e.getId() == updatedOrganization.getId()) {
+            Organization o = organizationList.get(i);
+            if(o.getId().equals(id)) {
                 organizationList.set(i, updatedOrganization);
                 return;
             }
@@ -43,7 +43,7 @@ public class OrganizationInMemoryRepository extends IRepository<Organization> {
     }
 
     @Override
-    public void delete(Integer id) {
-        organizationList.removeIf(e -> e.getId()  == id);
+    public void delete(String id) {
+        organizationList.removeIf(e -> e.getId().equals(id));
     }
 }

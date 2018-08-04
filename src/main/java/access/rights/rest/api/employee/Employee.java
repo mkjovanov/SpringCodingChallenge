@@ -1,31 +1,36 @@
 package access.rights.rest.api.employee;
 
+import access.rights.rest.api.access.right.AccessRight;
 import access.rights.rest.api.organization.Organization;
 import access.rights.rest.api.repository.IEntity;
+
+import java.util.Dictionary;
 
 //@Entity
 public class Employee implements IEntity {
 
     //@Id
-    private Integer id;
+    private String id;
     private String firstName;
     private String lastName;
     //@ManyToOne
     private Organization organization;
+    private AccessRight internalAccessRight;
+    private Dictionary<Organization, AccessRight> externalAccessRightList;
 
     public Employee(){ }
-    public Employee(int id, String firstName, String lastName, Integer organizationId) {
+    public Employee(String id, String firstName, String lastName, String organizationId) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.organization = new Organization(organizationId, "<TO FIX>");
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

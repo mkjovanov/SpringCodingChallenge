@@ -13,25 +13,25 @@ import java.util.stream.Collectors;
 public class EmployeeInMemoryRepository extends IRepository <Employee> {
 
     public List<Employee> employeeList = new ArrayList<>(Arrays.asList(
-            new Employee(1, "Pera", "Perić", 2),
-            new Employee(2, "Mika", "Mikić", 2),
-            new Employee(3, "Zora", "Zorić", 2),
-            new Employee(4, "Sloba", "Stanković", 3),
-            new Employee(5, "Jovana", "Jovanović", 3),
-            new Employee(6, "Nemanja", "Nemanjić", 3)));
+            new Employee("pera.peric", "Pera", "Perić", "b"),
+            new Employee("mika.mikic", "Mika", "Mikić", "b"),
+            new Employee("zora.zoric", "Zora", "Zorić", "b"),
+            new Employee("sloba.stankovic", "Sloba", "Stanković", "c"),
+            new Employee("jovana.jovanovic", "Jovana", "Jovanović", "c"),
+            new Employee("nemanja.nemanjic", "Nemanja", "Nemanjić", "c")));
 
     @Override
     public List<Employee> getAll() {
         return employeeList;
     }
 
-    public List<Employee> getAllByOrganizationId(Integer organizationId) {
-        return employeeList.stream().filter(e -> e.getOrganization().getId() == organizationId).collect(Collectors.toList());
+    public List<Employee> getAllByOrganizationId(String organizationId) {
+        return employeeList.stream().filter(e -> e.getOrganization().getId().equals(organizationId)).collect(Collectors.toList());
     }
 
     @Override
-    public Employee get(Integer id) {
-        return employeeList.stream().filter(e -> e.getId() == id).findFirst().get();
+    public Employee get(String id) {
+        return employeeList.stream().filter(e -> e.getId().equals(id)).findFirst().get();
     }
 
     @Override
@@ -40,10 +40,10 @@ public class EmployeeInMemoryRepository extends IRepository <Employee> {
     }
 
     @Override
-    public void update(Employee updatedEmployee) {
+    public void update(String id, Employee updatedEmployee) {
         for(int i = 0; i < employeeList.size(); i++) {
             Employee e = employeeList.get(i);
-            if(e.getId() == updatedEmployee.getId()) {
+            if(e.getId().equals(id)) {
                 employeeList.set(i, updatedEmployee);
                 return;
             }
@@ -51,7 +51,7 @@ public class EmployeeInMemoryRepository extends IRepository <Employee> {
     }
 
     @Override
-    public void delete(Integer id) {
-        employeeList.removeIf(e -> e.getId()  == id);
+    public void delete(String id) {
+        employeeList.removeIf(e -> e.getId().equals(id));
     }
 }

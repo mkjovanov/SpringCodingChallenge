@@ -16,7 +16,7 @@ public class OrganizationService {
         return organizationRepository.getAll();
     }
 
-    public Organization getOrganization(Integer id) {
+    public Organization getOrganization(String id) {
         return organizationRepository.get(id);
     }
 
@@ -24,11 +24,11 @@ public class OrganizationService {
         organizationRepository.add(newOrganization);
     }
 
-    public void updateOrganization(Organization updatedOrganization) {
-        organizationRepository.update(updatedOrganization);
+    public void updateOrganization(String id, Organization updatedOrganization) {
+        organizationRepository.update(id, updatedOrganization);
     }
 
-    public void deleteOrganization(Integer id) {
+    public void deleteOrganization(String id) {
         organizationRepository.delete(id);
     }
 }

@@ -12,11 +12,11 @@ public class ProductService {
     @Autowired
     private ProductInMemoryRepository productRepository;
 
-    public List<Product> getAllProducts(Integer organizationId) {
+    public List<Product> getAllProducts(String organizationId) {
         return productRepository.getAllByOrganizationId(organizationId);
     }
 
-    public Product getProduct(Integer id) {
+    public Product getProduct(String id) {
         return productRepository.get(id);
     }
 
@@ -24,11 +24,11 @@ public class ProductService {
         productRepository.add(newProduct);
     }
 
-    public void updateProduct(Product updatedProduct) {
-        productRepository.update(updatedProduct);
+    public void updateProduct(String id, Product updatedProduct) {
+        productRepository.update(id, updatedProduct);
     }
 
-    public void deleteProduct(Integer id) {
+    public void deleteProduct(String id) {
         productRepository.delete(id);
     }
 }

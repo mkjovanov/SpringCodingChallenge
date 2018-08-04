@@ -17,7 +17,7 @@ public class OrganizationController {
     }
 
     @RequestMapping("/organizations/{id}")
-    public Organization getAllOrganizations(@PathVariable Integer id) {
+    public Organization getAllOrganizations(@PathVariable String id) {
         return organizationService.getOrganization(id);
     }
 
@@ -32,12 +32,12 @@ public class OrganizationController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/organizations/{id}")
-    public void updateOrganization(@RequestBody Organization updatedOrganization) {
-        organizationService.updateOrganization(updatedOrganization);
+    public void updateOrganization(@RequestBody Organization updatedOrganization, @PathVariable String id) {
+        organizationService.updateOrganization(id, updatedOrganization);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/organizations/{id}")
-    public void deleteOrganization(@PathVariable("id") Integer id) {
+    public void deleteOrganization(@PathVariable("id") String id) {
         organizationService.deleteOrganization(id);
     }
 }

@@ -8,7 +8,7 @@ import access.rights.rest.api.repository.IEntity;
 public class Product implements IEntity {
 
     //@Id
-    private Integer id;
+    private String id;
     private String name;
     private double price;
     private int stock;
@@ -18,7 +18,7 @@ public class Product implements IEntity {
     private AccessRight accessRight;
 
     public Product() { }
-    public Product(Integer id, String name, double price, int stock, int organizationId) {
+    public Product(String id, String name, double price, int stock, String organizationId) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -27,11 +27,11 @@ public class Product implements IEntity {
         this.accessRight = new AccessRight(true, true, true, true);
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
