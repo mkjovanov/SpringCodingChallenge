@@ -14,6 +14,9 @@ public class Organization implements IEntity {
         this.id = id;
         this.name = name;
     }
+    public Organization(String id) {
+        this(id, "");
+    }
 
     public String getId() {
         return id;

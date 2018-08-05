@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 public class ProductInMemoryRepository extends IRepository<Product> {
 
     public List<Product> productList = new ArrayList<>(Arrays.asList(
+            new Product("test1", "test", 1, 1, "a"),
             new Product("elektromotor", "Elektromotor", 550, 5, "b"),
             new Product("energetski-kabel", "Energetski kabel", 100, 8, "b"),
             new Product("osigurac", "Osigurač", 20, 120, "b"),

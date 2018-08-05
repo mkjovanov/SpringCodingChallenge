@@ -1,6 +1,6 @@
 package access.rights.rest.api.product;
 
-import access.rights.rest.api.access.right.AccessRight;
+import access.rights.rest.api.access.rights.AccessRights;
 import access.rights.rest.api.organization.Organization;
 import access.rights.rest.api.repository.IEntity;
 
@@ -15,7 +15,7 @@ public class Product implements IEntity {
     //@ManyToOne
     private Organization organization;
     //@ManyToOne
-    private AccessRight accessRight;
+    private AccessRights accessRights;
 
     public Product() { }
     public Product(String id, String name, double price, int stock, String organizationId) {
@@ -24,7 +24,7 @@ public class Product implements IEntity {
         this.price = price;
         this.stock = stock;
         this.organization = new Organization(organizationId, "");
-        this.accessRight = new AccessRight(true, true, true, true);
+        this.accessRights = new AccessRights(true, true, true, true, null);
     }
 
     public String getId() {
@@ -67,11 +67,11 @@ public class Product implements IEntity {
         this.organization = organization;
     }
 
-    public AccessRight getAccessRight() {
-        return accessRight;
+    public AccessRights getAccessRights() {
+        return accessRights;
     }
 
-    public void setAccessRight(AccessRight accessRight) {
-        this.accessRight = accessRight;
+    public void setAccessRights(AccessRights accessRights) {
+        this.accessRights = accessRights;
     }
 }

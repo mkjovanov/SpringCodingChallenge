@@ -1,20 +1,25 @@
-package access.rights.rest.api.access.right;
+package access.rights.rest.api.access.rights;
 
-import access.rights.rest.api.repository.IEntity;
-
-public class AccessRight implements IEntity {
+public class AccessRights {
 
     private boolean create;
     private boolean read;
     private boolean update;
     private boolean delete;
+    private QuantityRestriction quantityRestriction;
 
-    public AccessRight() {}
-    public AccessRight(boolean create, boolean read, boolean update, boolean delete) {
+    public AccessRights() {
+        this(false, true, false, false, null);
+    }
+    public AccessRights(boolean create, boolean read, boolean update, boolean delete) {
+        this(create, read, update, delete, null);
+    }
+    public AccessRights(boolean create, boolean read, boolean update, boolean delete, QuantityRestriction quantityRestriction) {
         this.create = create;
         this.read = read;
         this.update = update;
         this.delete = delete;
+        this.quantityRestriction = quantityRestriction;
     }
 
     public boolean isCreate() {
@@ -47,5 +52,13 @@ public class AccessRight implements IEntity {
 
     public void setDelete(boolean delete) {
         this.delete = delete;
+    }
+
+    public QuantityRestriction getQuantityRestriction() {
+        return quantityRestriction;
+    }
+
+    public void setQuantityRestriction(QuantityRestriction quantityRestriction) {
+        this.quantityRestriction = quantityRestriction;
     }
 }

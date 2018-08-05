@@ -1,19 +1,19 @@
 package access.rights.rest.api.employee.repository;
 
+import access.rights.rest.api.access.rights.AccessRights;
 import access.rights.rest.api.employee.Employee;
 import access.rights.rest.api.repository.IRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
 public class EmployeeInMemoryRepository extends IRepository <Employee> {
 
     public List<Employee> employeeList = new ArrayList<>(Arrays.asList(
-            new Employee("pera.peric", "Pera", "Perić", "b"),
+            new Employee("pera.peric", "Pera", "Perić", "b",
+                    new HashMap<String, AccessRights>(){{put("c", new AccessRights());}}),
             new Employee("mika.mikic", "Mika", "Mikić", "b"),
             new Employee("zora.zoric", "Zora", "Zorić", "b"),
             new Employee("sloba.stankovic", "Sloba", "Stanković", "c"),
