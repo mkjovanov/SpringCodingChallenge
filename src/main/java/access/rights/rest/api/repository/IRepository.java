@@ -1,5 +1,7 @@
 package access.rights.rest.api.repository;
 
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
 public abstract class IRepository <T extends IEntity>{
