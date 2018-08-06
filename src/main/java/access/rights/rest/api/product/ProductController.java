@@ -5,6 +5,7 @@ import access.rights.rest.api.organization.Organization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RestController
@@ -19,14 +20,15 @@ public class ProductController {
     }
 
     @RequestMapping("/organizations/{organizationId}/products/{id}")
-    public Product getProduct(@PathVariable("id") String id) {
-        return productService.getProduct(id);
+    public Product getProduct(@PathVariable("organizationId") String organizationId, @PathVariable("id") String id) throws AccessDeniedException {
+        return productService.getProduct(organizationId, id);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/organizations/{organizationId}/products")
     public void addNewProduct(@PathVariable("organizationId") String organizationId, @RequestBody Product newProduct) {
         newProduct.setOrganization(new Organization(organizationId, ""));
-        newProduct.setAccessRights(new AccessRights(true, true, true, true, null));
+        //TODO: Get logged in user access rights object
+        newProduct.setAccessRights(new AccessRights());
         productService.addProduct(newProduct);
     }
 

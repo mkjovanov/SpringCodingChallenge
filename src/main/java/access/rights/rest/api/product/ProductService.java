@@ -5,6 +5,7 @@ import access.rights.rest.api.product.repository.ProductInMemoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,17 @@ public class ProductService {
         return availableProducts;
     }
 
-    public Product getProduct(String id) {
+    public Product getProduct(String organizationId, String id)  throws AccessDeniedException {
+        if(!accessRightsService.isInternalReadAvailable() ||
+           !accessRightsService.isExternalReadAvailable(organizationId)) {
+            throw new AccessDeniedException("", "", "");
+        }
+        if (!(accessRightsService.isInternalAccessRight(organizationId) &&
+            accessRightsService.isInternalReadAvailable()) ||
+            !(accessRightsService.isExternalAccessRight(organizationId) &&
+            accessRightsService.isExternalReadAvailable(organizationId))) {
+            throw new AccessDeniedException("", "", "");
+        }
         return productRepository.get(id);
     }
 
