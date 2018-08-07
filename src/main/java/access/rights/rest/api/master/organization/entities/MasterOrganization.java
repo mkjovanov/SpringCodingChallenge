@@ -1,6 +1,7 @@
-package access.rights.rest.api.organization;
+package access.rights.rest.api.master.organization.entities;
 
 import access.rights.rest.api.approval.request.ApprovalRequest;
+import access.rights.rest.api.organization.entities.Organization;
 
 import java.util.List;
 

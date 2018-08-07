@@ -1,30 +1,28 @@
-package access.rights.rest.api.product;
+package access.rights.rest.api.product.entities;
 
-import access.rights.rest.api.access.rights.AccessRights;
-import access.rights.rest.api.organization.Organization;
+import access.rights.rest.api.organization.entities.Organization;
 import access.rights.rest.api.repository.IEntity;
 
-//@Entity
 public class Product implements IEntity {
 
-    //@Id
     private String id;
     private String name;
     private double price;
     private int stock;
-    //@ManyToOne
     private Organization organization;
-    //@ManyToOne
-    private AccessRights accessRights;
 
-    public Product() { }
+    public Product() {
+        this("Access denied", "", 0, 0, "");
+    }
     public Product(String id, String name, double price, int stock, String organizationId) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.stock = stock;
         this.organization = new Organization(organizationId, "");
-        this.accessRights = new AccessRights(true, true, true, true, null);
+    }
+    public Product(String id, String name) {
+        this(id, name, 0, 0, "");
     }
 
     public String getId() {
@@ -65,13 +63,5 @@ public class Product implements IEntity {
 
     public void setOrganization(Organization organization) {
         this.organization = organization;
-    }
-
-    public AccessRights getAccessRights() {
-        return accessRights;
-    }
-
-    public void setAccessRights(AccessRights accessRights) {
-        this.accessRights = accessRights;
     }
 }

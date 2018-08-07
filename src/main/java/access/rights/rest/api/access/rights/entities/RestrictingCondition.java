@@ -1,4 +1,4 @@
-package access.rights.rest.api.access.rights;
+package access.rights.rest.api.access.rights.entities;
 
 public enum RestrictingCondition {
     LessThan,

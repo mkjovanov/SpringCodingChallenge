@@ -1,7 +1,9 @@
-package access.rights.rest.api.employee.repository;
+package access.rights.rest.api.employee.repositories;
 
-import access.rights.rest.api.access.rights.AccessRights;
-import access.rights.rest.api.employee.Employee;
+import access.rights.rest.api.access.rights.entities.CrudOperation;
+import access.rights.rest.api.access.rights.entities.access.rights.ExternalAccessRights;
+import access.rights.rest.api.access.rights.entities.access.rights.InternalAccessRights;
+import access.rights.rest.api.employee.entities.Employee;
 import access.rights.rest.api.repository.IRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,8 +14,7 @@ import java.util.stream.Collectors;
 public class EmployeeInMemoryRepository extends IRepository <Employee> {
 
     public List<Employee> employeeList = new ArrayList<>(Arrays.asList(
-            new Employee("pera.peric", "Pera", "Perić", "b",
-                    new HashMap<String, AccessRights>(){{put("c", new AccessRights());}}),
+            new Employee("pera.peric", "Pera", "Perić", "b"),
             new Employee("mika.mikic", "Mika", "Mikić", "b"),
             new Employee("zora.zoric", "Zora", "Zorić", "b"),
             new Employee("sloba.stankovic", "Sloba", "Stanković", "c"),

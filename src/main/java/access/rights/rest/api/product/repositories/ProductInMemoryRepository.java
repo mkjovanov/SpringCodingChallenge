@@ -1,6 +1,6 @@
-package access.rights.rest.api.product.repository;
+package access.rights.rest.api.product.repositories;
 
-import access.rights.rest.api.product.Product;
+import access.rights.rest.api.product.entities.Product;
 import access.rights.rest.api.repository.IRepository;
 import org.springframework.stereotype.Repository;
 

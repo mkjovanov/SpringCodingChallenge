@@ -1,12 +1,17 @@
 package access.rights.rest.api.access.rights;
 
-import access.rights.rest.api.employee.Employee;
-import access.rights.rest.api.employee.repository.EmployeeInMemoryRepository;
-import access.rights.rest.api.product.Product;
-import access.rights.rest.api.product.repository.ProductInMemoryRepository;
+import access.rights.rest.api.access.rights.entities.CrudOperation;
+import access.rights.rest.api.access.rights.entities.QuantityRestriction;
+import access.rights.rest.api.access.rights.entities.RestrictingCondition;
+import access.rights.rest.api.employee.entities.Employee;
+import access.rights.rest.api.employee.repositories.EmployeeInMemoryRepository;
+import access.rights.rest.api.organization.OrganizationService;
+import access.rights.rest.api.product.entities.Product;
+import access.rights.rest.api.product.repositories.ProductInMemoryRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,30 +24,29 @@ public class AccessRightsService {
     private ProductInMemoryRepository productRepository;
     @Autowired
     private EmployeeInMemoryRepository employeeRepository;
-    //TODO: Change to read from the actual logged in user
-    //private Employee loggedInUser = employeeRepository.get("pera.peric");
+    @Autowired
+    private OrganizationService organizationService;
 
     public List<Product> filterByInternalReadAllRights(String organizationId) {
         ArrayList<Product> availableProducts = new ArrayList<>();
-        if (isInternalAccessRight(organizationId) && isInternalReadAvailable()) {
+        if (isInternalAccessRight(organizationId) && isInternalOperationAvailable(CrudOperation.Read)) {
             availableProducts.addAll(productRepository.getAllByOrganizationId(organizationId));
         }
         return availableProducts;
     }
 
-    public List<Product> filterByExternalReadAllRights(String organizationId) {
+/*    public List<Product> filterByExternalReadAllRights(String organizationId) {
         ArrayList<Product> availableProducts = new ArrayList<>();
-        if (isExternalAccessRight(organizationId) && isExternalReadAvailable(organizationId)) {
+        if (isExternalAccessRight(organizationId) && isExternalOperationAvailable(CrudOperation.Read)) {
             availableProducts.addAll(applyQuantityRestrictions(organizationId));
         }
         return availableProducts;
     }
 
     private List<Product> applyQuantityRestrictions(String organizationId) {
-        Employee loggedInUser = employeeRepository.get("pera.peric");
         ArrayList<Product> availableProducts = new ArrayList<>();
         QuantityRestriction quantityRestriction =
-                loggedInUser.getExternalAccessRightsList().get(organizationId).getQuantityRestriction();
+                organizationService.getOrganization(organizationId).getExternalAccessRightsList().;
 
         if (isQuantityRestrictionAvailable(quantityRestriction)) {
             if (isQuantityLessThan(quantityRestriction)) {
@@ -59,27 +63,35 @@ public class AccessRightsService {
         }
 
         return availableProducts;
-    }
+    }*/
 
     public boolean isInternalAccessRight(String organizationId) {
         Employee loggedInUser = employeeRepository.get("pera.peric");
         return loggedInUser.getOrganization().getId().equals(organizationId);
     }
 
-    public boolean isInternalReadAvailable() {
+    public boolean isInternalOperationAvailable(CrudOperation crudOperation) {
         Employee loggedInUser = employeeRepository.get("pera.peric");
-        return loggedInUser.getInternalAccessRights().isRead();
+        return loggedInUser
+                .getInternalExternalAccessRights()
+                .getCrudOperations().stream()
+                .anyMatch(c -> c == crudOperation);
     }
 
-    public boolean isExternalAccessRight(String organizationId) {
+
+    public boolean isExternalOperationAvailable(CrudOperation crudOperation) {
+        Employee loggedInUser = employeeRepository.get("pera.peric");
+        throw new NotImplementedException();
+/*        return loggedInUser
+                .getInternalExternalAccessRights()
+                .getCrudOperationSet().stream()
+                .anyMatch(c -> c == crudOperation);*/
+    }
+
+/*    public boolean isExternalAccessRight(String organizationId) {
         Employee loggedInUser = employeeRepository.get("pera.peric");
         return loggedInUser.getExternalAccessRightsList().containsKey(organizationId);
-    }
-
-    public boolean isExternalReadAvailable(String organizationId) {
-        Employee loggedInUser = employeeRepository.get("pera.peric");
-        return loggedInUser.getExternalAccessRightsList().get(organizationId).isRead();
-    }
+    }*/
 
     private boolean isQuantityRestrictionAvailable(QuantityRestriction quantityRestriction) {
         return quantityRestriction != null;

@@ -1,5 +1,6 @@
 package access.rights.rest.api.organization;
 
+import access.rights.rest.api.organization.entities.Organization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

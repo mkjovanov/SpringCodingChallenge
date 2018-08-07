@@ -1,6 +1,7 @@
 package access.rights.rest.api.employee;
 
-import access.rights.rest.api.organization.Organization;
+import access.rights.rest.api.employee.entities.Employee;
+import access.rights.rest.api.organization.entities.Organization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;

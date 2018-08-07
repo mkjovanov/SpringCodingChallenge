@@ -1,6 +1,7 @@
 package access.rights.rest.api.employee;
 
-import access.rights.rest.api.employee.repository.EmployeeInMemoryRepository;
+import access.rights.rest.api.employee.entities.Employee;
+import access.rights.rest.api.employee.repositories.EmployeeInMemoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

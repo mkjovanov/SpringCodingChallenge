@@ -1,17 +1,16 @@
-package access.rights.rest.api.organization;
+package access.rights.rest.api.organization.entities;
 
-import access.rights.rest.api.access.rights.AccessRights;
+import access.rights.rest.api.access.rights.entities.access.rights.ExternalAccessRights;
 import access.rights.rest.api.repository.IEntity;
 
-import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
 
-//@Entity
 public class Organization implements IEntity {
 
-    //@Id
     private String id;
     private String name;
-    private Map<String, AccessRights> externalAccessRightsList;
+    private HashMap<String, List<ExternalAccessRights>> externalAccessRightsList;
 
     public Organization() { }
     public Organization(String id, String name) {
@@ -39,4 +38,11 @@ public class Organization implements IEntity {
         this.name = name;
     }
 
+    public HashMap<String, List<ExternalAccessRights>> getExternalAccessRightsList() {
+        return externalAccessRightsList;
+    }
+
+    public void setExternalAccessRightsList(HashMap<String, List<ExternalAccessRights>> externalAccessRightsList) {
+        this.externalAccessRightsList = externalAccessRightsList;
+    }
 }

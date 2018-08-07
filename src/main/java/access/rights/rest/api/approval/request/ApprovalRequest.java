@@ -1,19 +1,19 @@
 package access.rights.rest.api.approval.request;
 
-import access.rights.rest.api.access.rights.AccessRights;
+import access.rights.rest.api.access.rights.entities.access.rights.ExternalAccessRights;
 
 public class ApprovalRequest {
 
     private String id;
     private String requestingOrganization;
     private String receivingOrganization;
-    private AccessRights accessRights;
+    private ExternalAccessRights externalAccessRights;
 
-    public ApprovalRequest(String id, String requestingOrganization, String receivingOrganization, AccessRights accessRights) {
+    public ApprovalRequest(String id, String requestingOrganization, String receivingOrganization, ExternalAccessRights externalAccessRights) {
         this.id = id;
         this.requestingOrganization = requestingOrganization;
         this.receivingOrganization = receivingOrganization;
-        this.accessRights = accessRights;
+        this.externalAccessRights = externalAccessRights;
     }
 
     public String getId() {
@@ -40,11 +40,11 @@ public class ApprovalRequest {
         this.receivingOrganization = receivingOrganization;
     }
 
-    public AccessRights getAccessRights() {
-        return accessRights;
+    public ExternalAccessRights getExternalAccessRights() {
+        return externalAccessRights;
     }
 
-    public void setAccessRights(AccessRights accessRights) {
-        this.accessRights = accessRights;
+    public void setExternalAccessRights(ExternalAccessRights externalAccessRights) {
+        this.externalAccessRights = externalAccessRights;
     }
 }

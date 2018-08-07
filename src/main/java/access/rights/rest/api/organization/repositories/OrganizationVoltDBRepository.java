@@ -1,6 +1,6 @@
-package access.rights.rest.api.organization.repository;
+package access.rights.rest.api.organization.repositories;
 
-import access.rights.rest.api.organization.Organization;
+import access.rights.rest.api.organization.entities.Organization;
 import access.rights.rest.api.repository.IRepository;
 import org.springframework.stereotype.Repository;
 import org.voltdb.VoltTable;

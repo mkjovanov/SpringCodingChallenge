@@ -1,6 +1,7 @@
 package access.rights.rest.api.organization;
 
-import access.rights.rest.api.organization.repository.OrganizationInMemoryRepository;
+import access.rights.rest.api.organization.entities.Organization;
+import access.rights.rest.api.organization.repositories.OrganizationInMemoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
