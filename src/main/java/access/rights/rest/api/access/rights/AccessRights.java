@@ -1,7 +1,6 @@
 package access.rights.rest.api.access.rights;
 
 public class AccessRights {
-
     private boolean create;
     private boolean read;
     private boolean update;
