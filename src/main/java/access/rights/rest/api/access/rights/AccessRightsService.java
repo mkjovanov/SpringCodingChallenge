@@ -46,7 +46,7 @@ public class AccessRightsService {
     private List<Product> applyQuantityRestrictions(String organizationId) {
         ArrayList<Product> availableProducts = new ArrayList<>();
         QuantityRestriction quantityRestriction =
-                organizationService.getOrganization(organizationId).getExternalAccessRightsList().;
+                organizationService.getMasterOrganization(organizationId).getExternalAccessRightsList().;
 
         if (isQuantityRestrictionAvailable(quantityRestriction)) {
             if (isQuantityLessThan(quantityRestriction)) {

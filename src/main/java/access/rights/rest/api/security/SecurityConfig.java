@@ -16,12 +16,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .withUser("admin1").password("secret1")
                 .roles("USER", "ADMIN", "ORGANIZATION_1");
+
     }
 
     // Authorization : Role -> Access
     protected void configure(HttpSecurity http) throws Exception {
         http.httpBasic().and().authorizeRequests()
-                .antMatchers("/organizations/**")
+                .antMatchers("/organizations/**", "/master-organizations/**")
                 .hasRole("USER")
                 .antMatchers("/**")
                 .hasRole("ADMIN")

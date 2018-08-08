@@ -9,6 +9,7 @@ public class ApprovalRequest {
     private String receivingOrganization;
     private ExternalAccessRights externalAccessRights;
 
+    public ApprovalRequest() {}
     public ApprovalRequest(String id, String requestingOrganization, String receivingOrganization, ExternalAccessRights externalAccessRights) {
         this.id = id;
         this.requestingOrganization = requestingOrganization;

@@ -32,7 +32,7 @@ public class OrganizationVoltDBRepository extends IRepository<Organization> {
         VoltTable voltDBOrganizationList;
         ArrayList<Organization> organizationList = new ArrayList<>();
         try {
-            voltDBOrganizationList = client.callProcedure("getAllOrganizations").getResults()[0];
+            voltDBOrganizationList = client.callProcedure("getAllMasterOrganizations").getResults()[0];
             voltDBOrganizationList.resetRowPosition();
             while(voltDBOrganizationList.advanceRow()) {
                 Organization o = new Organization();
