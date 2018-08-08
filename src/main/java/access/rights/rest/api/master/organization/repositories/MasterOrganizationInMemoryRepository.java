@@ -1,7 +1,7 @@
 package access.rights.rest.api.master.organization.repositories;
 
 import access.rights.rest.api.access.rights.entities.access.rights.ExternalAccessRights;
-import access.rights.rest.api.approval.request.ApprovalRequest;
+import access.rights.rest.api.approval.request.entities.ApprovalRequest;
 import access.rights.rest.api.master.organization.entities.MasterOrganization;
 import access.rights.rest.api.repository.IRepository;
 import org.springframework.stereotype.Repository;

@@ -18,7 +18,7 @@ public class MasterOrganizationController {
     }
 
     @RequestMapping("/master-organizations/{id}")
-    public MasterOrganization getAllMasterOrganizations(@PathVariable String id) {
+    public MasterOrganization getMasterOrganization(@PathVariable String id) {
         return masterOrganizationService.getMasterOrganization(id);
     }
 

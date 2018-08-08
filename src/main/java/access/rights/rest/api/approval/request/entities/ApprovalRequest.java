@@ -1,8 +1,9 @@
-package access.rights.rest.api.approval.request;
+package access.rights.rest.api.approval.request.entities;
 
 import access.rights.rest.api.access.rights.entities.access.rights.ExternalAccessRights;
+import access.rights.rest.api.repository.IEntity;
 
-public class ApprovalRequest {
+public class ApprovalRequest implements IEntity {
 
     private String id;
     private String requestingOrganization;
