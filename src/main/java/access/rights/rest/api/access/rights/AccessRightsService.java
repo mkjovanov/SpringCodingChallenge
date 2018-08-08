@@ -3,9 +3,13 @@ package access.rights.rest.api.access.rights;
 import access.rights.rest.api.access.rights.entities.CrudOperation;
 import access.rights.rest.api.access.rights.entities.QuantityRestriction;
 import access.rights.rest.api.access.rights.entities.RestrictingCondition;
+import access.rights.rest.api.access.rights.entities.access.rights.ExternalAccessRights;
+import access.rights.rest.api.approval.request.ApprovalRequestService;
+import access.rights.rest.api.approval.request.entities.ApprovalRequest;
 import access.rights.rest.api.employee.entities.Employee;
 import access.rights.rest.api.employee.repositories.EmployeeInMemoryRepository;
 import access.rights.rest.api.organization.OrganizationService;
+import access.rights.rest.api.organization.entities.Organization;
 import access.rights.rest.api.product.entities.Product;
 import access.rights.rest.api.product.repositories.ProductInMemoryRepository;
 
@@ -26,6 +30,8 @@ public class AccessRightsService {
     private EmployeeInMemoryRepository employeeRepository;
     @Autowired
     private OrganizationService organizationService;
+    @Autowired
+    private ApprovalRequestService approvalRequestService;
 
     public List<Product> filterByInternalReadAllRights(String organizationId) {
         ArrayList<Product> availableProducts = new ArrayList<>();
@@ -115,5 +121,12 @@ public class AccessRightsService {
         return productRepository.getAllByOrganizationId(organizationId).stream()
                 .filter(p -> p.getStock() > restrictedAmmount)
                 .collect(Collectors.toList());
+    }
+
+    public void approveRequest(String id) {
+        ApprovalRequest approvalRequest = approvalRequestService.getApprovalRequest(id);
+        Organization requestingOrganization = organizationService.getOrganization(approvalRequest.getRequestingOrganization());
+        requestingOrganization.getExternalAccessRightsList().add(approvalRequest.getExternalAccessRights());
+        organizationService.updateOrganization(requestingOrganization.getId(), requestingOrganization);
     }
 }

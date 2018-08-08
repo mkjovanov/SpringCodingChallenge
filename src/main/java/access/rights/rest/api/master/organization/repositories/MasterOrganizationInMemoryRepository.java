@@ -15,7 +15,7 @@ public class MasterOrganizationInMemoryRepository extends IRepository<MasterOrga
 
     public List<MasterOrganization> masterOrganizationList = new ArrayList<>(Arrays.asList(
             new MasterOrganization("a", "A",
-                new ArrayList<>(Arrays.asList(new ApprovalRequest("1", "b", "c", new ExternalAccessRights())))),
+                new ArrayList<>(Arrays.asList(new ApprovalRequest("1", "b", new ExternalAccessRights("c"))))),
             new MasterOrganization("b", "B"),
             new MasterOrganization("c", "C")));
 

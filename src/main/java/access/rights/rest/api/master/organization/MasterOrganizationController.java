@@ -1,5 +1,6 @@
 package access.rights.rest.api.master.organization;
 
+import access.rights.rest.api.access.rights.AccessRightsService;
 import access.rights.rest.api.master.organization.entities.MasterOrganization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,8 @@ public class MasterOrganizationController {
 
     @Autowired
     private MasterOrganizationService masterOrganizationService;
+    @Autowired
+    private AccessRightsService accessRightsService;
 
     @RequestMapping("/master-organizations")
     public List<MasterOrganization> getAllMasterOrganizations() {
@@ -40,5 +43,10 @@ public class MasterOrganizationController {
     @RequestMapping(method = RequestMethod.DELETE, value = "/master-organizations/{id}")
     public void deleteMasterOrganization(@PathVariable("id") String id) {
         masterOrganizationService.deleteMasterOrganization(id);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/master-organizations/approveRequest/{id}")
+    public void approveRequest(@PathVariable("id") String id) {
+        accessRightsService.approveRequest(id);
     }
 }

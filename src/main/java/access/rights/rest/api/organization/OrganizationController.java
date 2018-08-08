@@ -1,7 +1,12 @@
 package access.rights.rest.api.organization;
 
+import access.rights.rest.api.approval.request.ApprovalRequestService;
+import access.rights.rest.api.approval.request.entities.ApprovalRequest;
+import access.rights.rest.api.master.organization.MasterOrganizationService;
 import access.rights.rest.api.organization.entities.Organization;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,6 +16,8 @@ public class OrganizationController {
 
     @Autowired
     private OrganizationService organizationService;
+    @Autowired
+    private ApprovalRequestService approvalRequestService;
 
     @RequestMapping("/organizations")
     public List<Organization> getAllOrganizations() {
@@ -40,5 +47,12 @@ public class OrganizationController {
     @RequestMapping(method = RequestMethod.DELETE, value = "/organizations/{id}")
     public void deleteOrganization(@PathVariable("id") String id) {
         organizationService.deleteOrganization(id);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/organizations/{id}/requestApproval")
+    @ResponseBody
+    public ResponseEntity requestApproval(@PathVariable("id") String id, @RequestBody ApprovalRequest approvalRequest) {
+        approvalRequestService.addApprovalRequest(approvalRequest);
+        return new ResponseEntity("Test", null, HttpStatus.ACCEPTED);
     }
 }

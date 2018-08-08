@@ -7,14 +7,12 @@ public class ApprovalRequest implements IEntity {
 
     private String id;
     private String requestingOrganization;
-    private String receivingOrganization;
     private ExternalAccessRights externalAccessRights;
 
     public ApprovalRequest() {}
-    public ApprovalRequest(String id, String requestingOrganization, String receivingOrganization, ExternalAccessRights externalAccessRights) {
+    public ApprovalRequest(String id, String requestingOrganization, ExternalAccessRights externalAccessRights) {
         this.id = id;
         this.requestingOrganization = requestingOrganization;
-        this.receivingOrganization = receivingOrganization;
         this.externalAccessRights = externalAccessRights;
     }
 
@@ -32,14 +30,6 @@ public class ApprovalRequest implements IEntity {
 
     public void setRequestingOrganization(String requestingOrganization) {
         this.requestingOrganization = requestingOrganization;
-    }
-
-    public String getReceivingOrganization() {
-        return receivingOrganization;
-    }
-
-    public void setReceivingOrganization(String receivingOrganization) {
-        this.receivingOrganization = receivingOrganization;
     }
 
     public ExternalAccessRights getExternalAccessRights() {

@@ -15,9 +15,9 @@ import java.util.List;
 public class ApprovalRequestInMemoryRepository extends IRepository<ApprovalRequest> {
 
     public List<ApprovalRequest> approvalRequestList = new ArrayList<>(Arrays.asList(
-            new ApprovalRequest("1", "c", "b", new ExternalAccessRights(EnumSet.of(CrudOperation.Create))),
-            new ApprovalRequest("2", "c", "d", new ExternalAccessRights(EnumSet.of(CrudOperation.Delete))),
-            new ApprovalRequest("2", "c", "d", new ExternalAccessRights(EnumSet.of(CrudOperation.Update)))));
+            new ApprovalRequest("1", "c", new ExternalAccessRights("b", EnumSet.of(CrudOperation.Create))),
+            new ApprovalRequest("2", "c", new ExternalAccessRights("b", EnumSet.of(CrudOperation.Delete))),
+            new ApprovalRequest("2", "c", new ExternalAccessRights("b", EnumSet.of(CrudOperation.Update)))));
 
     @Override
     public List<ApprovalRequest> getAll() {

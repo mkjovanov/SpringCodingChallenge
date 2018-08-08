@@ -5,6 +5,7 @@ public class QuantityRestriction {
     private int restrictedAmmount;
     private RestrictingCondition restrictingCondition;
 
+    public QuantityRestriction(){}
     public QuantityRestriction(int restrictedAmmount, RestrictingCondition restrictingCondition) {
         this.restrictedAmmount = restrictedAmmount;
         this.restrictingCondition = restrictingCondition;
