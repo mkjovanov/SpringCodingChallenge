@@ -14,8 +14,7 @@ import java.util.List;
 public class MasterOrganizationInMemoryRepository extends IRepository<MasterOrganization> {
 
     public List<MasterOrganization> masterOrganizationList = new ArrayList<>(Arrays.asList(
-            new MasterOrganization("a", "A",
-                new ArrayList<>(Arrays.asList(new ApprovalRequest("1", "b", new ExternalAccessRights("c"))))),
+            new MasterOrganization("a", "A"),
             new MasterOrganization("b", "B"),
             new MasterOrganization("c", "C")));
 

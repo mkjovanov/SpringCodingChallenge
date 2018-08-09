@@ -21,8 +21,12 @@ public class ProductService {
 
     public List<Product> getAllProducts(String organizationId) {
         ArrayList<Product> availableProducts = new ArrayList<>();
-        if (accessRightsService.isInternalOperationAvailable(CrudOperation.Read)) {
+        if (accessRightsService.isInternalAccessRight(organizationId) &&
+            accessRightsService.isInternalOperationAvailable(CrudOperation.Read)) {
             availableProducts.addAll(accessRightsService.filterByInternalReadAllRights(organizationId));
+        }
+        else if (accessRightsService.isExternalOperationAvailable(CrudOperation.Read, organizationId)) {
+            availableProducts.addAll(accessRightsService.filterByExternalReadAllRights(organizationId));
         }
         return availableProducts;
     }
@@ -50,5 +54,9 @@ public class ProductService {
 
     public void deleteProduct(String id) {
         productRepository.delete(id);
+    }
+
+    public List<Product> getAllProductsBypassAccessRights(String organizationId) {
+        return productRepository.getAllByOrganizationId(organizationId);
     }
 }

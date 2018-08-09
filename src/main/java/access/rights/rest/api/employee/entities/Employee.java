@@ -58,7 +58,7 @@ public class Employee implements IEntity {
         this.organization = organization;
     }
 
-    public InternalAccessRights getInternalExternalAccessRights() {
+    public InternalAccessRights getInternalAccessRights() {
         return internalAccessRights;
     }
 
