@@ -62,7 +62,7 @@ public class Employee implements IEntity {
         return internalAccessRights;
     }
 
-    public void setInternalExternalAccessRights(InternalAccessRights internalExternalAccessRights) {
-        this.internalAccessRights = internalExternalAccessRights;
+    public void setInternalAccessRights(InternalAccessRights internalAccessRights) {
+        this.internalAccessRights = internalAccessRights;
     }
 }
