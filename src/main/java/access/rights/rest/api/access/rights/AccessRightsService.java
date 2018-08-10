@@ -40,6 +40,23 @@ public class AccessRightsService {
         approvalRequestService.deleteApprovalRequest(id);
     }
 
+    public boolean isCrudOperationAvailable(CrudOperation crudOperation, String organizationId) {
+        return (isInternalAccessRight(organizationId) && isInternalOperationAvailable(crudOperation)) ||
+                (isExternalOperationAvailable(crudOperation, organizationId));
+    }
+
+    public List<Product> filterByAccessRights(String organizationId) {
+        ArrayList<Product> filteredProducts = new ArrayList<>();
+        if (isInternalAccessRight(organizationId) &&
+                isInternalOperationAvailable(CrudOperation.Read)) {
+            filteredProducts.addAll(filterByInternalReadAllRights(organizationId));
+        }
+        else if (isExternalOperationAvailable(CrudOperation.Read, organizationId)) {
+            filteredProducts.addAll(filterByExternalReadAllRights(organizationId));
+        }
+        return filteredProducts;
+    }
+
     public List<Product> filterByInternalReadAllRights(String organizationId) {
         ArrayList<Product> availableProducts = new ArrayList<>();
         if (isInternalAccessRight(organizationId) && isInternalOperationAvailable(CrudOperation.Read)) {

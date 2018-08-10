@@ -53,6 +53,6 @@ public class OrganizationController {
     @ResponseBody
     public ResponseEntity requestApproval(@PathVariable("id") String id, @RequestBody ApprovalRequest approvalRequest) {
         approvalRequestService.addApprovalRequest(approvalRequest);
-        return new ResponseEntity("Test", null, HttpStatus.ACCEPTED);
+        return new ResponseEntity("Approval request successfully sent.", null, HttpStatus.ACCEPTED);
     }
 }

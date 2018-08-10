@@ -7,8 +7,6 @@ import access.rights.rest.api.product.repositories.ProductInMemoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.AccessDeniedException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,40 +18,32 @@ public class ProductService {
     private AccessRightsService accessRightsService;
 
     public List<Product> getAllProducts(String organizationId) {
-        ArrayList<Product> availableProducts = new ArrayList<>();
-        if (accessRightsService.isInternalAccessRight(organizationId) &&
-            accessRightsService.isInternalOperationAvailable(CrudOperation.Read)) {
-            availableProducts.addAll(accessRightsService.filterByInternalReadAllRights(organizationId));
-        }
-        else if (accessRightsService.isExternalOperationAvailable(CrudOperation.Read, organizationId)) {
-            availableProducts.addAll(accessRightsService.filterByExternalReadAllRights(organizationId));
-        }
-        return availableProducts;
+        return accessRightsService.filterByAccessRights(organizationId);
     }
 
-    public Product getProduct(String organizationId, String id)  throws AccessDeniedException {
-        if (accessRightsService.isInternalAccessRight(organizationId) &&
-            accessRightsService.isInternalOperationAvailable(CrudOperation.Read)) {
+    public Product getProduct(String organizationId, String id) {
+        if (accessRightsService.isCrudOperationAvailable(CrudOperation.Read, organizationId)) {
             return productRepository.get(id);
         }
-        throw new AccessDeniedException("Access denied");
+        return null;
     }
 
-    public void addProduct(Product newProduct) throws AccessDeniedException {
-        if (accessRightsService.isInternalOperationAvailable(CrudOperation.Create)) {
+    public void addProduct(String organizationId, Product newProduct) {
+        if (accessRightsService.isCrudOperationAvailable(CrudOperation.Create, organizationId)) {
             productRepository.add(newProduct);
         }
-        else {
-            throw new AccessDeniedException("Access denied");
+    }
+
+    public void updateProduct(String id, String organizationId, Product updatedProduct) {
+        if (accessRightsService.isCrudOperationAvailable(CrudOperation.Update, organizationId)) {
+            productRepository.update(id, updatedProduct);
         }
     }
 
-    public void updateProduct(String id, Product updatedProduct) {
-        productRepository.update(id, updatedProduct);
-    }
-
-    public void deleteProduct(String id) {
-        productRepository.delete(id);
+    public void deleteProduct(String id, String organizationId) {
+        if (accessRightsService.isCrudOperationAvailable(CrudOperation.Delete, organizationId)) {
+            productRepository.delete(id);
+        }
     }
 
     public List<Product> getAllProductsBypassAccessRights(String organizationId) {
