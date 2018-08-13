@@ -12,6 +12,7 @@ import org.voltdb.client.ClientFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public class OrganizationVoltDBRepository extends IRepository<Organization> {
@@ -53,12 +54,13 @@ public class OrganizationVoltDBRepository extends IRepository<Organization> {
     @Override
     public Organization get(String id) {
         VoltTable voltDBOrganization;
-        Organization organization = new Organization();
+        Organization organization = null;
         try {
             voltDBOrganization = client.callProcedure("getOrganization", id).getResults()[0];
             voltDBOrganization.resetRowPosition();
             while(voltDBOrganization.advanceRow()) {
                 //TODO: Set external rights
+                organization = new Organization();
                 organization.setId((String) voltDBOrganization.get("OrganizationId", VoltType.STRING));
                 organization.setName((String) voltDBOrganization.get("Name", VoltType.STRING));
             }
@@ -75,6 +77,9 @@ public class OrganizationVoltDBRepository extends IRepository<Organization> {
     @Override
     public void add(Organization newEntity) {
         try {
+            if(newEntity.getId() == null) {
+                newEntity.setId(UUID.randomUUID().toString());
+            }
             client.callProcedure("ORGANIZATIONS.insert", newEntity.getId(), newEntity.getName());
         } catch (Exception e) {
             throw new RuntimeException(e);

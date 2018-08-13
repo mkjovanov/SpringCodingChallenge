@@ -10,6 +10,5 @@ CREATE TABLE Organizations (
 );
 ************************************
 CREATE PROCEDURE getAllOrganizations AS SELECT * FROM organizations;
-************************************
-CREATE PROCEDURE getOrganization AS SELECT * FROM organizations WHERE id=?;
+CREATE PROCEDURE getOrganization AS SELECT * FROM organizations WHERE OrganizationId=?;
 ************************************

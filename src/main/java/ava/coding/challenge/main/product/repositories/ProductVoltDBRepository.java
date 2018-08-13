@@ -2,6 +2,7 @@ package ava.coding.challenge.main.product.repositories;
 
 import ava.coding.challenge.main.product.entities.Product;
 import ava.coding.challenge.repository.IRepository;
+import org.springframework.stereotype.Repository;
 import org.voltdb.VoltTable;
 import org.voltdb.VoltType;
 import org.voltdb.client.Client;
@@ -11,7 +12,9 @@ import org.voltdb.client.ClientFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+@Repository
 public class ProductVoltDBRepository extends IRepository<Product> {
     String driver = "org.voltdb.jdbc.Driver";
     String url = "avabackup.northeurope.cloudapp.azure.com:21212";
@@ -76,6 +79,9 @@ public class ProductVoltDBRepository extends IRepository<Product> {
     @Override
     public void add(Product newEntity) {
         try {
+            if(newEntity.getId() == null) {
+                newEntity.setId(UUID.randomUUID().toString());
+            }
             client.callProcedure("PRODUCT.insert",
                     newEntity.getId(), newEntity.getOrganization(), newEntity.getName(),
                     newEntity.getPrice(), newEntity.getStock());

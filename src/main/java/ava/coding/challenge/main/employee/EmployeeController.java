@@ -2,8 +2,10 @@ package ava.coding.challenge.main.employee;
 
 import ava.coding.challenge.main.employee.entities.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.ws.Response;
 import java.util.List;
 
 @RestController
@@ -23,10 +25,11 @@ public class EmployeeController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/organizations/{organizationId}/employees")
-    public void addEmployee(@PathVariable String organizationId,
-                            @RequestBody Employee newEmployee) {
+    @ResponseBody
+    public ResponseEntity addEmployee(@PathVariable String organizationId,
+                                      @RequestBody Employee newEmployee) {
         newEmployee.setOrganization(organizationId);
-        employeeService.addEmployee(newEmployee);
+        return employeeService.addEmployee(newEmployee);
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/organizations/{organizationId}/employees/{id}")
@@ -37,8 +40,10 @@ public class EmployeeController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/organizations/{organizationId}/employees/{id}")
-    public void deleteEmployee(@PathVariable("id") String id) {
-        employeeService.deleteEmployee(id);
+    @ResponseBody
+    public ResponseEntity deleteEmployee(@PathVariable("organizationId") String organizationId,
+                                         @PathVariable("id") String id) {
+        return employeeService.deleteEmployee(organizationId, id);
     }
 
     @RequestMapping(method = RequestMethod.PATCH, value = "/organizations/{organizationId}/employees")
