@@ -33,9 +33,6 @@ public class EmployeeController {
     public void updateEmployee(@PathVariable String organizationId,
                                @RequestBody Employee updatedEmployee,
                                @PathVariable String id) {
-        if (updatedEmployee.getOrganization() == null) {
-            updatedEmployee.setOrganization(organizationId);
-        }
         employeeService.updateEmployee(id, updatedEmployee);
     }
 

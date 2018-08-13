@@ -1,5 +1,6 @@
 package ava.coding.challenge.main.employee;
 
+import ava.coding.challenge.helpers.NullHelper;
 import ava.coding.challenge.main.employee.entities.Employee;
 import ava.coding.challenge.main.employee.repositories.EmployeeInMemoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ public class EmployeeService {
 
     @Autowired
     private EmployeeInMemoryRepository employeeRepository;
+    @Autowired
+    private NullHelper nullHelper;
 
     public List<Employee> getAllEmployees(String organizationId) {
         return employeeRepository.getAllByOrganizationId(organizationId);
@@ -26,7 +29,8 @@ public class EmployeeService {
     }
 
     public void updateEmployee(String id, Employee updatedEmployee) {
-        employeeRepository.update(id, updatedEmployee);
+        Employee sanitizedEmployee = nullHelper.sanitizeNullValues(id, updatedEmployee);
+        employeeRepository.update(id, sanitizedEmployee);
     }
 
     public void deleteEmployee(String id) {

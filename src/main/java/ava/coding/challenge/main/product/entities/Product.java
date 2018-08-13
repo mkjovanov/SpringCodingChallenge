@@ -6,7 +6,7 @@ public class Product implements IEntity {
 
     private String id;
     private String name;
-    private double price;
+    private Double price;
     private Integer stock;
     private String organization;
 
@@ -38,7 +38,7 @@ public class Product implements IEntity {
         this.name = name;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
@@ -46,7 +46,7 @@ public class Product implements IEntity {
         this.price = price;
     }
 
-    public int getStock() {
+    public Integer getStock() {
         return stock;
     }
 

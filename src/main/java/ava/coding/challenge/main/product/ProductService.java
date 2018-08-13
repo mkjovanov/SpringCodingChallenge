@@ -1,5 +1,6 @@
 package ava.coding.challenge.main.product;
 
+import ava.coding.challenge.helpers.NullHelper;
 import ava.coding.challenge.main.organization.access.rights.AccessRightsService;
 import ava.coding.challenge.main.organization.access.rights.entities.CrudOperation;
 import ava.coding.challenge.main.organization.access.rights.entities.access.rights.InternalAccessRights;
@@ -22,13 +23,15 @@ public class ProductService {
     private ProductInMemoryRepository productRepository;
     @Autowired
     private AccessRightsService accessRightsService;
+    @Autowired
+    private NullHelper nullHelper;
 
     public ResponseEntity<List<Product>> getAllProducts(String organizationId) {
         List<Product> availableProducts = accessRightsService.filterByAccessRights(organizationId);
         if (availableProducts.isEmpty()) {
             return new ResponseEntity("Reading products from organization: '" + organizationId +
-                                            "' is forbidden for this user",
-                                            HttpStatus.FORBIDDEN);
+                    "' is forbidden for this user",
+                    HttpStatus.FORBIDDEN);
         }
 
         List<ProductResponse> productResponses = new ArrayList<>();
@@ -41,8 +44,8 @@ public class ProductService {
     public ResponseEntity<Product> getProduct(String organizationId, String id) {
         if (!accessRightsService.isCrudOperationAvailable(CrudOperation.Read, organizationId)) {
             return new ResponseEntity("Reading product from organization: '" + organizationId +
-                                            "' is forbidden for this user",
-                                            HttpStatus.FORBIDDEN);
+                    "' is forbidden for this user",
+                    HttpStatus.FORBIDDEN);
         }
         ProductResponse productResponse = new ProductResponse(
                 productRepository.get(id),
@@ -53,8 +56,8 @@ public class ProductService {
     public ResponseEntity addProduct(String organizationId, Product newProduct) {
         if (!accessRightsService.isCrudOperationAvailable(CrudOperation.Create, organizationId)) {
             return new ResponseEntity("Adding new product from organization: '" + organizationId +
-                                            "' is forbidden for this user",
-                                            HttpStatus.FORBIDDEN);
+                    "' is forbidden for this user",
+                    HttpStatus.FORBIDDEN);
         }
         productRepository.add(newProduct);
         return new ResponseEntity(newProduct, HttpStatus.CREATED);
@@ -64,7 +67,10 @@ public class ProductService {
         if (!accessRightsService.isCrudOperationAvailable(CrudOperation.Update, organizationId)) {
             return new ResponseEntity("Updating product from organization: '" + organizationId + "' is forbidden for this user", HttpStatus.FORBIDDEN);
         }
-        productRepository.update(id, updatedProduct);
+
+        Product sanitizedProduct = nullHelper.sanitizeNullValues(id, updatedProduct);
+        productRepository.update(id, sanitizedProduct);
+
         return new ResponseEntity(updatedProduct, HttpStatus.ACCEPTED);
     }
 
@@ -78,5 +84,10 @@ public class ProductService {
 
     public List<Product> getAllProductsBypassAccessRights(String organizationId) {
         return productRepository.getAllByOrganizationId(organizationId);
+    }
+
+    public Product getProductBypassAccessRights(String id) {
+        return productRepository.get(id);
+
     }
 }

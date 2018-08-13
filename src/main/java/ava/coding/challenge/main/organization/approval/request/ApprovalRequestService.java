@@ -1,5 +1,6 @@
 package ava.coding.challenge.main.organization.approval.request;
 
+import ava.coding.challenge.helpers.NullHelper;
 import ava.coding.challenge.main.organization.approval.request.entities.ApprovalRequest;
 import ava.coding.challenge.main.organization.approval.request.repositories.ApprovalRequestInMemoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ public class ApprovalRequestService {
 
     @Autowired
     private ApprovalRequestInMemoryRepository approvalRequestInMemoryRepository;
+    @Autowired
+    private NullHelper nullHelper;
 
     public List<ApprovalRequest> getAllApprovalRequests() {
         return approvalRequestInMemoryRepository.getAll();
@@ -26,7 +29,8 @@ public class ApprovalRequestService {
     }
 
     public void updateApprovalRequest(String id, ApprovalRequest updatedApprovalRequest) {
-        approvalRequestInMemoryRepository.update(id, updatedApprovalRequest);
+        ApprovalRequest sanitizedApprovalRequest = nullHelper.sanitizeNullValues(id, updatedApprovalRequest);
+        approvalRequestInMemoryRepository.update(id, sanitizedApprovalRequest);
     }
 
     public void deleteApprovalRequest(String id) {
