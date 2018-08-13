@@ -20,7 +20,7 @@ public class Organization implements IEntity {
         this.name = name;
         this.externalAccessRightsList = new ArrayList<>();
     }
-    public Organization(String id, String name, ArrayList<ExternalAccessRights> externalAccessRightsList) {
+    public Organization(String id, String name, List<ExternalAccessRights> externalAccessRightsList) {
         this.id = id;
         this.name = name;
         this.externalAccessRightsList = externalAccessRightsList;

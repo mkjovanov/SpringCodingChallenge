@@ -1,7 +1,9 @@
 package ava.coding.challenge.main.organization.repositories;
 
+import ava.coding.challenge.main.organization.access.rights.ExternalAccessRightsService;
 import ava.coding.challenge.main.organization.entities.Organization;
 import ava.coding.challenge.repository.IRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -10,6 +12,9 @@ import java.util.List;
 
 @Repository
 public class OrganizationInMemoryRepository extends IRepository<Organization> {
+
+    @Autowired
+    private ExternalAccessRightsService externalAccessRightsService;
 
     public List<Organization> organizationList = new ArrayList<>(Arrays.asList(
             new Organization("a", "A"),

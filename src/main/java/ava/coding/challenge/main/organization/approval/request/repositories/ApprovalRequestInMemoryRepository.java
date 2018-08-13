@@ -1,8 +1,8 @@
 package ava.coding.challenge.main.organization.approval.request.repositories;
 
 import ava.coding.challenge.main.organization.access.rights.entities.CrudOperation;
-import ava.coding.challenge.main.organization.access.rights.entities.access.rights.ExternalAccessRights;
 import ava.coding.challenge.main.organization.approval.request.entities.ApprovalRequest;
+import ava.coding.challenge.main.organization.approval.request.entities.RequestingRights;
 import ava.coding.challenge.repository.IRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,9 +15,9 @@ import java.util.List;
 public class ApprovalRequestInMemoryRepository extends IRepository<ApprovalRequest> {
 
     public List<ApprovalRequest> approvalRequestList = new ArrayList<>(Arrays.asList(
-            new ApprovalRequest("1", "c", new ExternalAccessRights("b", EnumSet.of(CrudOperation.Create))),
-            new ApprovalRequest("2", "c", new ExternalAccessRights("b", EnumSet.of(CrudOperation.Delete))),
-            new ApprovalRequest("2", "c", new ExternalAccessRights("b", EnumSet.of(CrudOperation.Update)))));
+            new ApprovalRequest("1", "c", new RequestingRights("b", EnumSet.of(CrudOperation.Create))),
+            new ApprovalRequest("2", "c", new RequestingRights("b", EnumSet.of(CrudOperation.Delete))),
+            new ApprovalRequest("2", "c", new RequestingRights("b", EnumSet.of(CrudOperation.Update)))));
 
     @Override
     public List<ApprovalRequest> getAll() {

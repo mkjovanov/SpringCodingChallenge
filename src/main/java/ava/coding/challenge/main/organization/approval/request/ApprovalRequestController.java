@@ -17,7 +17,7 @@ public class ApprovalRequestController {
         return approvalRequestService.getAllApprovalRequests();
     }
 
-    @RequestMapping("/master-organizations//approval-requests/{id}")
+    @RequestMapping("/master-organizations/approval-requests/{id}")
     public ApprovalRequest getApprovalRequest(@PathVariable String id) {
         return approvalRequestService.getApprovalRequest(id);
     }

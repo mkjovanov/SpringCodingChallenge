@@ -2,33 +2,56 @@ package ava.coding.challenge.main.organization.access.rights.entities.access.rig
 
 import ava.coding.challenge.main.organization.access.rights.entities.CrudOperation;
 import ava.coding.challenge.main.organization.access.rights.entities.QuantityRestriction;
+import ava.coding.challenge.repository.IEntity;
 
 import java.util.EnumSet;
 
-public class ExternalAccessRights extends AccessRightsBase {
+public class ExternalAccessRights extends AccessRightsBase implements IEntity {
 
-    private String sharedOrganization;
+    private String id;
+    private String accessingOrganization;
+    private String sharingOrganization;
     private QuantityRestriction quantityRestriction;
 
     public ExternalAccessRights() { }
-    public ExternalAccessRights(String sharedOrganization) {
-        this(sharedOrganization, EnumSet.of(CrudOperation.Read), null);
+    public ExternalAccessRights(String id, String accessingOrganization, String sharingOrganization) {
+        this(id, accessingOrganization, sharingOrganization, EnumSet.of(CrudOperation.Read), null);
     }
-    public ExternalAccessRights(String sharedOrganization, EnumSet<CrudOperation> crudOperationSet) {
-        this(sharedOrganization, crudOperationSet, null);
+    public ExternalAccessRights(String id, String accessingOrganization, String sharingOrganization,
+                                EnumSet<CrudOperation> crudOperationSet) {
+        this(id, accessingOrganization, sharingOrganization, crudOperationSet, null);
     }
-    public ExternalAccessRights(String sharedOrganization, EnumSet<CrudOperation> crudOperationSet, QuantityRestriction quantityRestriction) {
-        super.crudOperations = crudOperationSet;
-        this.sharedOrganization = sharedOrganization;
+    public ExternalAccessRights(String id, String accessingOrganization, String sharingOrganization,
+                                EnumSet<CrudOperation> crudOperationSet, QuantityRestriction quantityRestriction) {
+        this.id = id;
+        this.accessingOrganization = accessingOrganization;
+        this.sharingOrganization = sharingOrganization;
         this.quantityRestriction = quantityRestriction;
+        super.crudOperations = crudOperationSet;
     }
 
-    public String getSharedOrganization() {
-        return sharedOrganization;
+    public String getId() {
+        return id;
     }
 
-    public void setSharedOrganization(String sharedOrganization) {
-        this.sharedOrganization = sharedOrganization;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getAccessingOrganization() {
+        return accessingOrganization;
+    }
+
+    public void setAccessingOrganization(String accessingOrganization) {
+        this.accessingOrganization = accessingOrganization;
+    }
+
+    public String getSharingOrganization() {
+        return sharingOrganization;
+    }
+
+    public void setSharingOrganization(String sharingOrganization) {
+        this.sharingOrganization = sharingOrganization;
     }
 
     public QuantityRestriction getQuantityRestriction() {

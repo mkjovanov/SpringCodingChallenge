@@ -41,7 +41,7 @@ public class AccessRightsService {
             Organization loggedInUsesOrganization = organizationService.getOrganization(loggedInUser.getOrganization());
             Organization  accessingOrganization = organizationService.getOrganization(organizationId);
             return accessingOrganization.getExternalAccessRightsList().stream()
-                    .filter(e -> e.getSharedOrganization().equals(loggedInUsesOrganization.getId()))
+                    .filter(e -> e.getSharingOrganization().equals(loggedInUsesOrganization.getId()))
                     .findFirst()
                     .get()
                     .getCrudOperations();
@@ -51,7 +51,8 @@ public class AccessRightsService {
     public void approveRequest(String id) {
         ApprovalRequest approvalRequest = approvalRequestService.getApprovalRequest(id);
         Organization requestingOrganization = organizationService.getOrganization(approvalRequest.getRequestingOrganization());
-        requestingOrganization.getExternalAccessRightsList().add(approvalRequest.getExternalAccessRights());
+        //TODO: Change to add to external access rights repo
+        //requestingOrganization.getExternalAccessRightsList().add(approvalRequest.getRequestingRights());
         organizationService.updateOrganization(requestingOrganization.getId(), requestingOrganization);
         approvalRequestService.deleteApprovalRequest(id);
     }
@@ -108,10 +109,10 @@ public class AccessRightsService {
         Employee loggedInUser = employeeService.getEmployee("pera.peric");
         Organization organization = organizationService.getOrganization(loggedInUser.getOrganization());
         boolean isExternalRightsMatch = organization.getExternalAccessRightsList().stream()
-                .anyMatch(x -> x.getSharedOrganization().equals(organizationId));
+                .anyMatch(x -> x.getSharingOrganization().equals(organizationId));
         return isExternalRightsMatch &&
                 organization.getExternalAccessRightsList().stream()
-                .filter(x -> x.getSharedOrganization().equals(organizationId))
+                .filter(x -> x.getSharingOrganization().equals(organizationId))
                 .findFirst().get()
                 .getCrudOperations().stream()
                 .anyMatch(y -> y.equals(crudOperation));
@@ -123,7 +124,7 @@ public class AccessRightsService {
         QuantityRestriction quantityRestriction =
                 organizationService.getOrganization(loggedInUser.getOrganization())
                         .getExternalAccessRightsList().stream()
-                        .filter(x -> x.getSharedOrganization().equals(organizationId))
+                        .filter(x -> x.getSharingOrganization().equals(organizationId))
                         .findFirst().get().getQuantityRestriction();
 
         if (isQuantityRestrictionAvailable(quantityRestriction)) {

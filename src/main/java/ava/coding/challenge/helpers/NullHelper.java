@@ -111,8 +111,8 @@ public class NullHelper {
         if(updatedApprovalRequest.getId() == null) {
             sanitizedApprovalRequest.setId(updatedApprovalRequestFromDb.getId());
         }
-        if(updatedApprovalRequest.getExternalAccessRights() == null) {
-            sanitizedApprovalRequest.setExternalAccessRights(updatedApprovalRequestFromDb.getExternalAccessRights());
+        if(updatedApprovalRequest.getRequestingRights() == null) {
+            sanitizedApprovalRequest.setRequestingRights(updatedApprovalRequestFromDb.getRequestingRights());
         }
         if(updatedApprovalRequest.getRequestingOrganization() == null) {
             sanitizedApprovalRequest.setRequestingOrganization(updatedApprovalRequestFromDb.getRequestingOrganization());

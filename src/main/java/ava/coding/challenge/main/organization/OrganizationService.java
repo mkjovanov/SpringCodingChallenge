@@ -13,7 +13,7 @@ import java.util.List;
 public class OrganizationService {
 
     @Autowired
-    private OrganizationVoltDBRepository organizationRepository;
+    private OrganizationInMemoryRepository organizationRepository;
     @Autowired
     private NullHelper nullHelper;
 
