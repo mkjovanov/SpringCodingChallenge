@@ -2,21 +2,21 @@ package ava.coding.challenge.main.organization.access.rights.entities;
 
 public class QuantityRestriction {
 
-    private int restrictedAmmount;
+    private int restrictedAmount;
     private RestrictingCondition restrictingCondition;
 
     public QuantityRestriction(){}
-    public QuantityRestriction(int restrictedAmmount, RestrictingCondition restrictingCondition) {
-        this.restrictedAmmount = restrictedAmmount;
+    public QuantityRestriction(int restrictedAmount, RestrictingCondition restrictingCondition) {
+        this.restrictedAmount = restrictedAmount;
         this.restrictingCondition = restrictingCondition;
     }
 
-    public int getRestrictedAmmount() {
-        return restrictedAmmount;
+    public int getRestrictedAmount() {
+        return restrictedAmount;
     }
 
-    public void setRestrictedAmmount(int restrictedAmmount) {
-        this.restrictedAmmount = restrictedAmmount;
+    public void setRestrictedAmount(int restrictedAmount) {
+        this.restrictedAmount = restrictedAmount;
     }
 
     public RestrictingCondition getRestrictingCondition() {

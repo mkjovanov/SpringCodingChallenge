@@ -32,7 +32,7 @@ public class OrganizationVoltDBRepository extends IRepository<Organization> {
         VoltTable voltDBOrganizationList;
         ArrayList<Organization> organizationList = new ArrayList<>();
         try {
-            voltDBOrganizationList = client.callProcedure("getAllMasterOrganizations").getResults()[0];
+            voltDBOrganizationList = client.callProcedure("getAllOrganizations").getResults()[0];
             voltDBOrganizationList.resetRowPosition();
             while(voltDBOrganizationList.advanceRow()) {
                 Organization o = new Organization();
@@ -52,21 +52,59 @@ public class OrganizationVoltDBRepository extends IRepository<Organization> {
 
     @Override
     public Organization get(String id) {
-        return null;
+        VoltTable voltDBOrganization;
+        Organization organization = new Organization();
+        try {
+            voltDBOrganization = client.callProcedure("getOrganization", id).getResults()[0];
+            voltDBOrganization.resetRowPosition();
+            while(voltDBOrganization.advanceRow()) {
+                //TODO: Set external rights
+                organization.setId((String) voltDBOrganization.get("id", VoltType.STRING));
+                organization.setName((String) voltDBOrganization.get("name", VoltType.STRING));
+            }
+
+            return organization;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            //client.drain();
+            //client.close();
+        }
     }
 
     @Override
     public void add(Organization newEntity) {
-
+        try {
+            client.callProcedure("ORGANIZATIONS.insert", newEntity.getId(), newEntity.getName());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            //client.drain();
+            //client.close();
+        }
     }
 
     @Override
     public void update(String id, Organization updatedEntity) {
-
+        try {
+            client.callProcedure("ORGANIZATIONS.update", updatedEntity.getId(), updatedEntity.getName(), id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            //client.drain();
+            //client.close();
+        }
     }
 
     @Override
     public void delete(String id) {
-
+        try {
+            client.callProcedure("ORGANIZATIONS.delete", id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            //client.drain();
+            //client.close();
+        }
     }
 }

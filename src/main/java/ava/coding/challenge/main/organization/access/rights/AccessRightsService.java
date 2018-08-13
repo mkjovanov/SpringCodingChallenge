@@ -129,11 +129,11 @@ public class AccessRightsService {
         if (isQuantityRestrictionAvailable(quantityRestriction)) {
             if (isQuantityLessThan(quantityRestriction)) {
                 availableProducts
-                        .addAll(filterByLessThanQuantity(organizationId, quantityRestriction.getRestrictedAmmount()));
+                        .addAll(filterByLessThanQuantity(organizationId, quantityRestriction.getRestrictedAmount()));
             }
             else if (isQuantityGreaterThan(quantityRestriction)) {
                 availableProducts
-                        .addAll(filterByGreaterThanQuantity(organizationId, quantityRestriction.getRestrictedAmmount()));
+                        .addAll(filterByGreaterThanQuantity(organizationId, quantityRestriction.getRestrictedAmount()));
             }
         }
         else {
