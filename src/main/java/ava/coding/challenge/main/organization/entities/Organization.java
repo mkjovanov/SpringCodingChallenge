@@ -11,6 +11,8 @@ public class Organization implements IEntity {
     private String id;
     private String name;
     private List<ExternalAccessRights> externalAccessRightsList;
+    //TODO: Organizations that products have been shared with
+    //private List<ExternalAccessRights>
 
     public Organization() { }
     public Organization(String id, String name) {

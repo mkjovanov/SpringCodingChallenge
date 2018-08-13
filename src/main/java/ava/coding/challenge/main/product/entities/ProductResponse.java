@@ -1,16 +1,18 @@
 package ava.coding.challenge.main.product.entities;
 
-import ava.coding.challenge.main.organization.access.rights.entities.access.rights.InternalAccessRights;
+import ava.coding.challenge.main.organization.access.rights.entities.CrudOperation;
+
+import java.util.EnumSet;
 
 public class ProductResponse {
 
     private Product product;
-    private InternalAccessRights accessRights;
+    private EnumSet<CrudOperation> accessRightsCrudOperations;
 
     public ProductResponse() {}
-    public ProductResponse(Product product, InternalAccessRights accessRights) {
+    public ProductResponse(Product product, EnumSet<CrudOperation> accessRightsCrudOperations) {
         this.product = product;
-        this.accessRights = accessRights;
+        this.accessRightsCrudOperations = accessRightsCrudOperations;
     }
 
     public Product getProduct() {
@@ -21,11 +23,11 @@ public class ProductResponse {
         this.product = product;
     }
 
-    public InternalAccessRights getAccessRights() {
-        return accessRights;
+    public EnumSet<CrudOperation> getAccessRightsCrudOperations() {
+        return accessRightsCrudOperations;
     }
 
-    public void setAccessRights(InternalAccessRights accessRights) {
-        this.accessRights = accessRights;
+    public void setAccessRightsCrudOperations(EnumSet<CrudOperation> accessRightsCrudOperations) {
+        this.accessRightsCrudOperations = accessRightsCrudOperations;
     }
 }

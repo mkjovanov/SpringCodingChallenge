@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 @Service
@@ -31,7 +32,8 @@ public class ProductService {
         }
 
         List<ProductResponse> productResponses = new ArrayList<>();
-        availableProducts.forEach(p -> productResponses.add(new ProductResponse(p, new InternalAccessRights())));
+        EnumSet<CrudOperation> accessRightCrudOperations = accessRightsService.getCurrentUserAccessRights(organizationId);
+        availableProducts.forEach(p -> productResponses.add(new ProductResponse(p, accessRightCrudOperations)));
 
         return new ResponseEntity(productResponses, HttpStatus.OK);
     }

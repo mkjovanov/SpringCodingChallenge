@@ -3,7 +3,6 @@ package ava.coding.challenge.main.organization.access.rights;
 import ava.coding.challenge.main.organization.access.rights.entities.CrudOperation;
 import ava.coding.challenge.main.organization.access.rights.entities.QuantityRestriction;
 import ava.coding.challenge.main.organization.access.rights.entities.RestrictingCondition;
-import ava.coding.challenge.main.organization.access.rights.entities.access.rights.InternalAccessRights;
 import ava.coding.challenge.main.organization.approval.request.ApprovalRequestService;
 import ava.coding.challenge.main.organization.approval.request.entities.ApprovalRequest;
 import ava.coding.challenge.main.employee.EmployeeService;
@@ -17,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,9 +32,20 @@ public class AccessRightsService {
     @Autowired
     private ApprovalRequestService approvalRequestService;
 
-    public InternalAccessRights getCurrentUserAccessRights(String organizationId) {
-        //TODO: Figure out how to read internal/external CRUD rights for each product entity for the current user
-        return new InternalAccessRights();
+    public EnumSet<CrudOperation> getCurrentUserAccessRights(String organizationId) {
+        Employee loggedInUser = employeeService.getEmployee("pera.peric");
+        if (loggedInUser.getOrganization().equals(organizationId)) {
+            return loggedInUser.getInternalAccessRights().getCrudOperations();
+        }
+        else {
+            Organization loggedInUsesOrganization = organizationService.getOrganization(loggedInUser.getOrganization());
+            Organization  accessingOrganization = organizationService.getOrganization(organizationId);
+            return accessingOrganization.getExternalAccessRightsList().stream()
+                    .filter(e -> e.getSharedOrganization().equals(loggedInUsesOrganization.getId()))
+                    .findFirst()
+                    .get()
+                    .getCrudOperations();
+        }
     }
 
     public void approveRequest(String id) {

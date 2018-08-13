@@ -1,10 +1,7 @@
 package ava.coding.challenge.main.product;
 
-import ava.coding.challenge.main.organization.access.rights.entities.access.rights.InternalAccessRights;
 import ava.coding.challenge.main.product.entities.Product;
-import ava.coding.challenge.main.product.entities.ProductResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,10 +23,7 @@ public class ProductController {
     @ResponseBody
     public ResponseEntity getProduct(@PathVariable("organizationId") String organizationId,
                                      @PathVariable("id") String id) {
-        ProductResponse productResponse = new ProductResponse(
-                productService.getProduct(organizationId, id).getBody(),
-                new InternalAccessRights());
-        return new ResponseEntity(productResponse, HttpStatus.OK);
+        return productService.getProduct(organizationId, id);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/organizations/{organizationId}/products")
