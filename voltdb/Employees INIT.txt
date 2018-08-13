@@ -1,0 +1,20 @@
+************************************
+DROP PROCEDURE getAllEmployees;
+DROP PROCEDURE getEmployee;
+DROP TABLE Employees;
+************************************
+CREATE TABLE Employees (
+   EmployeeId varchar(64) UNIQUE NOT NULL,
+   FirstName varchar(32),
+   LastName varchar(32),
+   OrganizationId varchar(64) NOT NULL,
+   InternalCreate TINYINT DEFAULT 0,
+   InternalRead TINYINT DEFAULT 1,
+   InternalUpdate TINYINT DEFAULT 0,
+   InternalDelete TINYINT DEFAULT 0,
+   PRIMARY KEY(EmployeeId)
+);
+************************************
+CREATE PROCEDURE getAllEmployees AS SELECT * FROM employees;
+CREATE PROCEDURE getEmployee AS SELECT * FROM employees WHERE EmployeeId=?;
+************************************

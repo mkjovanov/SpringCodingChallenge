@@ -1,0 +1,15 @@
+************************************
+DROP PROCEDURE getAllOrganizations;
+DROP PROCEDURE getOrganization;
+DROP TABLE Organizations;
+************************************
+CREATE TABLE Organizations (
+   OrganizationId VARCHAR(64) UNIQUE NOT NULL,
+   Name VARCHAR(32),
+   PRIMARY KEY(OrganizationId)
+);
+************************************
+CREATE PROCEDURE getAllOrganizations AS SELECT * FROM organizations;
+************************************
+CREATE PROCEDURE getOrganization AS SELECT * FROM organizations WHERE id=?;
+************************************

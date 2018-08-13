@@ -1,0 +1,17 @@
+************************************
+DROP PROCEDURE getAllProducts;
+DROP PROCEDURE getProduct;
+DROP TABLE Products;
+************************************
+CREATE TABLE Products (
+   ProductId VARCHAR(64) UNIQUE NOT NULL,
+   OrganizationId VARCHAR(64) NOT NULL,
+   Name VARCHAR(64),
+   Price FLOAT,
+   Stock INTEGER,
+   PRIMARY KEY(ProductId)
+);
+************************************
+CREATE PROCEDURE getAllProducts AS SELECT * FROM products;
+CREATE PROCEDURE getProduct AS SELECT * FROM products WHERE ProductId=?;
+************************************
