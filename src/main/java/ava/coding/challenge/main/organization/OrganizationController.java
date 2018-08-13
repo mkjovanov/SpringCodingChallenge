@@ -24,7 +24,7 @@ public class OrganizationController {
     }
 
     @RequestMapping("/organizations/{id}")
-    public Organization getAllOrganizations(@PathVariable String id) {
+    public Organization getOrganization(@PathVariable String id) {
         return organizationService.getOrganization(id);
     }
 

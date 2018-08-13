@@ -46,7 +46,7 @@ public class ProductService {
         }
         ProductResponse productResponse = new ProductResponse(
                 productRepository.get(id),
-                accessRightsService.getCurrentUserAccessRights(id));
+                accessRightsService.getCurrentUserAccessRights(organizationId));
         return new ResponseEntity(productResponse, HttpStatus.OK);
     }
 
