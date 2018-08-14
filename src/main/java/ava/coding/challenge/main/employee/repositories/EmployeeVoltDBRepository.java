@@ -1,6 +1,8 @@
 package ava.coding.challenge.main.employee.repositories;
 
 import ava.coding.challenge.main.employee.entities.Employee;
+import ava.coding.challenge.main.organization.access.rights.entities.CrudOperation;
+import ava.coding.challenge.main.organization.access.rights.entities.access.rights.InternalAccessRights;
 import ava.coding.challenge.repository.IRepository;
 import org.springframework.stereotype.Repository;
 import org.voltdb.VoltTable;
@@ -11,6 +13,7 @@ import org.voltdb.client.ClientFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,14 +33,14 @@ public class EmployeeVoltDBRepository extends IRepository<Employee> {
 
     @Override
     public List<Employee> getAll() {
-        VoltTable voltDBOrganizationList;
+        VoltTable voltDBEmployeeList;
         ArrayList<Employee> employeesList = new ArrayList<>();
         try {
-            voltDBOrganizationList = client.callProcedure("getAllEmployees").getResults()[0];
-            voltDBOrganizationList.resetRowPosition();
+            voltDBEmployeeList = client.callProcedure("getAllEmployees").getResults()[0];
+            voltDBEmployeeList.resetRowPosition();
 
-            while(voltDBOrganizationList.advanceRow()) {
-                Employee initializedEmployee = initializeEmployee(voltDBOrganizationList, employeesList);
+            while (voltDBEmployeeList.advanceRow()) {
+                Employee initializedEmployee = initializeEmployee(voltDBEmployeeList);
                 employeesList.add(initializedEmployee);
             }
         } catch (Exception e) {
@@ -53,20 +56,17 @@ public class EmployeeVoltDBRepository extends IRepository<Employee> {
     public Employee get(String id) {
         VoltTable voltDBEmployee;
         Employee employee = null;
+
         try {
             voltDBEmployee = client.callProcedure("getEmployee", id).getResults()[0];
             voltDBEmployee.resetRowPosition();
-            while(voltDBEmployee.advanceRow()) {
-                employee = new Employee();
-                employee.setId((String) voltDBEmployee.get("EmployeeId", VoltType.STRING));
-                employee.setFirstName((String) voltDBEmployee.get("FirstName", VoltType.STRING));
-                employee.setLastName((String) voltDBEmployee.get("LastName", VoltType.STRING));
-                employee.setOrganization((String) voltDBEmployee.get("OrganizationId", VoltType.STRING));
-                //TODO: Set internal access rights
-                //employee.setInternalAccessRights((String) voltDBOrganizationList.get("OrganizationId", VoltType.STRING));
+            Employee initializedEmployee = null;
+
+            while (voltDBEmployee.advanceRow()) {
+                initializedEmployee = initializeEmployee(voltDBEmployee);
             }
 
-            return employee;
+            return initializedEmployee;
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
@@ -81,10 +81,20 @@ public class EmployeeVoltDBRepository extends IRepository<Employee> {
             if(newEntity.getId() == null) {
                 newEntity.setId(UUID.randomUUID().toString());
             }
-            // TODO: Map CRUD operations
+
             client.callProcedure("EMPLOYEES.insert",
-                    newEntity.getId(), newEntity.getFirstName(), newEntity.getLastName(),
-                    newEntity.getOrganization(), 0, 1, 0, 0);
+                                     newEntity.getId(),
+                                     newEntity.getFirstName(),
+                                     newEntity.getLastName(),
+                                     newEntity.getOrganization(),
+                                     newEntity.getInternalAccessRights().getCrudOperations()
+                                             .contains(CrudOperation.Create) == true ? 1 : 0,
+                                     newEntity.getInternalAccessRights().getCrudOperations()
+                                             .contains(CrudOperation.Read) == true ? 1 : 0,
+                                     newEntity.getInternalAccessRights().getCrudOperations()
+                                             .contains(CrudOperation.Update) == true ? 1 : 0,
+                                     newEntity.getInternalAccessRights().getCrudOperations()
+                                             .contains(CrudOperation.Delete) == true ? 1 : 0);
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
@@ -96,8 +106,16 @@ public class EmployeeVoltDBRepository extends IRepository<Employee> {
     @Override
     public void update(String id, Employee updatedEntity) {
         try {
-            // TODO: Map the function operations
-            client.callProcedure("EMPLOYEES.update", updatedEntity.getId(), updatedEntity.getFirstName(), id);
+            client.callProcedure("EMPLOYEES.update",
+                                    updatedEntity.getId(),
+                                    updatedEntity.getFirstName(),
+                                    updatedEntity.getLastName(),
+                                    updatedEntity.getOrganization(),
+                                    updatedEntity.getInternalAccessRights().getCrudOperations().contains(CrudOperation.Create),
+                                    updatedEntity.getInternalAccessRights().getCrudOperations().contains(CrudOperation.Read),
+                                    updatedEntity.getInternalAccessRights().getCrudOperations().contains(CrudOperation.Update),
+                                    updatedEntity.getInternalAccessRights().getCrudOperations().contains(CrudOperation.Delete),
+                                    id);
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
@@ -127,7 +145,7 @@ public class EmployeeVoltDBRepository extends IRepository<Employee> {
             voltDBOrganizationList.resetRowPosition();
 
             while(voltDBOrganizationList.advanceRow()) {
-                Employee initializedEmployee = initializeEmployee(voltDBOrganizationList, employeesList);
+                Employee initializedEmployee = initializeEmployee(voltDBOrganizationList);
                 employeesList.add(initializedEmployee);
             }
         } catch (Exception e) {
@@ -140,14 +158,31 @@ public class EmployeeVoltDBRepository extends IRepository<Employee> {
         return employeesList;
     }
 
-    private Employee initializeEmployee(VoltTable voltDBOrganizationList, ArrayList<Employee> employeesList) {
+    private Employee initializeEmployee(VoltTable voltDBEmployee) {
         Employee employee = new Employee();
-        employee.setId((String) voltDBOrganizationList.get("EmployeeId", VoltType.STRING));
-        employee.setFirstName((String) voltDBOrganizationList.get("FirstName", VoltType.STRING));
-        employee.setLastName((String) voltDBOrganizationList.get("LastName", VoltType.STRING));
-        employee.setOrganization((String) voltDBOrganizationList.get("OrganizationId", VoltType.STRING));
-        //TODO: Set internal access rights
-        //employee.setInternalAccessRights((String) voltDBOrganizationList.get("OrganizationId", VoltType.STRING));
+
+        employee.setId((String) voltDBEmployee.get("EmployeeId", VoltType.STRING));
+        employee.setFirstName((String) voltDBEmployee.get("FirstName", VoltType.STRING));
+        employee.setLastName((String) voltDBEmployee.get("LastName", VoltType.STRING));
+        employee.setOrganization((String) voltDBEmployee.get("OrganizationId", VoltType.STRING));
+
+        InternalAccessRights internalAccessRights = new InternalAccessRights();
+        EnumSet<CrudOperation> crudOperations = EnumSet.noneOf(CrudOperation.class);
+        if((Integer) voltDBEmployee.get("InternalCreate", VoltType.TINYINT) == 1 ? true : false){
+            crudOperations.add(CrudOperation.Create);
+        }
+        if((Integer) voltDBEmployee.get("InternalRead", VoltType.TINYINT) == 1 ? true : false) {
+            crudOperations.add(CrudOperation.Read);
+        }
+        if((Integer) voltDBEmployee.get("InternalUpdate", VoltType.TINYINT) == 1 ? true : false) {
+            crudOperations.add(CrudOperation.Update);
+        }
+        if((Integer) voltDBEmployee.get("InternalDelete", VoltType.TINYINT) == 1 ? true : false){
+            crudOperations.add(CrudOperation.Delete);
+        }
+        internalAccessRights.setCrudOperations(crudOperations);
+        employee.setInternalAccessRights(internalAccessRights);
+
         return employee;
     }
 }

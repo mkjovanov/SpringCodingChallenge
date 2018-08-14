@@ -1,0 +1,23 @@
+************************************
+DROP PROCEDURE getAllApprovalRequests;
+DROP PROCEDURE getApprovalRequest;
+DROP TABLE ApprovalRequests;
+************************************
+CREATE TABLE ApprovalRequests (
+   ApprovalRequestId VARCHAR(64) UNIQUE NOT NULL,
+   RequestingOrganizationId VARCHAR(64) NOT NULL,
+   SharingOrganizationId VARCHAR(64) NOT NULL,
+   IsCreate TINYINT DEFAULT 0,
+   IsRead TINYINT DEFAULT 1,
+   IsUpdate TINYINT DEFAULT 0,
+   IsDelete TINYINT DEFAULT 0,
+   QuantityRestrictionAmount INTEGER,
+   RestrictingCondition VARCHAR(16),
+   PRIMARY KEY(ApprovalRequestId)
+);
+************************************
+CREATE PROCEDURE getAllApprovalRequests AS SELECT * FROM ApprovalRequests;
+CREATE PROCEDURE getApprovalRequest AS SELECT * FROM ApprovalRequests WHERE ApprovalRequestId=?;
+CREATE PROCEDURE getApprovalRequestByRequestingOrganizationId AS SELECT * FROM ApprovalRequests WHERE RequestingOrganizationId=?;
+CREATE PROCEDURE getApprovalRequestBySharingOrganizationId AS SELECT * FROM ApprovalRequests WHERE SharingOrganizationId=?;
+************************************

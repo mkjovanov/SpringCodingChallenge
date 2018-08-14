@@ -51,6 +51,7 @@ public class OrganizationController {
     @RequestMapping(method = RequestMethod.POST, value = "/organizations/{id}/requestApproval")
     @ResponseBody
     public ResponseEntity requestApproval(@PathVariable("id") String id, @RequestBody ApprovalRequest approvalRequest) {
+        approvalRequest.setRequestingOrganization(id);
         approvalRequestService.addApprovalRequest(approvalRequest);
         return new ResponseEntity("Approval request successfully sent.", null, HttpStatus.ACCEPTED);
     }
