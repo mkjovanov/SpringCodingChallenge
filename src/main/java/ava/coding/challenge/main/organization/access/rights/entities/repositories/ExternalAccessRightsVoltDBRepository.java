@@ -14,6 +14,7 @@ import org.voltdb.client.ClientConfig;
 import org.voltdb.client.ClientFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -32,12 +33,41 @@ public class ExternalAccessRightsVoltDBRepository extends IRepository<ExternalAc
 
     @Override
     public List<ExternalAccessRights> getAll() {
-        return null;
+        VoltTable voltDBExternalRightsList;
+        ArrayList<ExternalAccessRights> externalRightsList = new ArrayList<>();
+        try {
+            voltDBExternalRightsList = client.callProcedure("getAllExternalRights").getResults()[0];
+            voltDBExternalRightsList.resetRowPosition();
+            while (voltDBExternalRightsList.advanceRow()) {
+                ExternalAccessRights approvalRequest = initializeExternalAccessRights(voltDBExternalRightsList);
+                externalRightsList.add(approvalRequest);
+            }
+            return externalRightsList;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            //client.drain();
+            //client.close();
+        }
     }
 
     @Override
     public ExternalAccessRights get(String id) {
-        return null;
+        VoltTable voltDBExternalRights;
+        try {
+            voltDBExternalRights = client.callProcedure("getExternalRights", id).getResults()[0];
+            voltDBExternalRights.resetRowPosition();
+            ExternalAccessRights initializedExternalRights = null;
+            while (voltDBExternalRights.advanceRow()) {
+                initializedExternalRights = initializeExternalAccessRights(voltDBExternalRights);
+            }
+            return initializedExternalRights;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            //client.drain();
+
+        }
     }
 
     @Override
@@ -55,55 +85,53 @@ public class ExternalAccessRightsVoltDBRepository extends IRepository<ExternalAc
 
     }
 
-    private ExternalAccessRights initializeExternalAccessrRights(VoltTable voltDBApprovalRequest) {
+    private ExternalAccessRights initializeExternalAccessRights(VoltTable voltDBExternalAccessRights) {
         ExternalAccessRights externalAccessRights = new ExternalAccessRights();
 
-        externalAccessRights.setId((String) voltDBApprovalRequest.get("ApprovalRequestId", VoltType.STRING));
-        externalAccessRights.setReceivingOrganization((String) voltDBApprovalRequest.get("ReceivingOrganization", VoltType.STRING));
-        externalAccessRights.setGivingOrganization((String) voltDBApprovalRequest.get("GivingOrganization", VoltType.STRING));
+        externalAccessRights.setId((String) voltDBExternalAccessRights.get("ExternalRightsId", VoltType.STRING));
+        externalAccessRights.setReceivingOrganization((String) voltDBExternalAccessRights.get("ReceivingOrganizationId", VoltType.STRING));
+        externalAccessRights.setGivingOrganization((String) voltDBExternalAccessRights.get("GivingOrganization", VoltType.STRING));
 
         RequestingRights requestingRights = new RequestingRights();
-        requestingRights.setSharingOrganization((String) voltDBApprovalRequest.get("SharingOrganizationId", VoltType.STRING));
+        requestingRights.setSharingOrganization((String) voltDBExternalAccessRights.get("SharingOrganizationId", VoltType.STRING));
         EnumSet<CrudOperation> crudOperations = EnumSet.noneOf(CrudOperation.class);
-        if((Byte) voltDBApprovalRequest.get("IsCreate", VoltType.TINYINT) == 1 ? true : false){
+        if((Byte) voltDBExternalAccessRights.get("IsCreate", VoltType.TINYINT) == 1 ? true : false){
             crudOperations.add(CrudOperation.Create);
         }
-        if((Byte) voltDBApprovalRequest.get("IsRead", VoltType.TINYINT) == 1 ? true : false) {
+        if((Byte) voltDBExternalAccessRights.get("IsRead", VoltType.TINYINT) == 1 ? true : false) {
             crudOperations.add(CrudOperation.Read);
         }
-        if((Byte) voltDBApprovalRequest.get("IsUpdate", VoltType.TINYINT) == 1 ? true : false) {
+        if((Byte) voltDBExternalAccessRights.get("IsUpdate", VoltType.TINYINT) == 1 ? true : false) {
             crudOperations.add(CrudOperation.Update);
         }
-        if((Byte) voltDBApprovalRequest.get("IsDelete", VoltType.TINYINT) == 1 ? true : false){
+        if((Byte) voltDBExternalAccessRights.get("IsDelete", VoltType.TINYINT) == 1 ? true : false){
             crudOperations.add(CrudOperation.Delete);
         }
         requestingRights.setCrudOperations(crudOperations);
 
         QuantityRestriction quantityRestriction = new QuantityRestriction();
-        Integer restrictingAmountDb = (Integer) voltDBApprovalRequest.get("QuantityRestrictionAmount", VoltType.INTEGER);
-        String restrictinConditionDb = (String) voltDBApprovalRequest.get("RestrictingCondition", VoltType.STRING);
+        Integer restrictingAmountDb = (Integer) voltDBExternalAccessRights.get("QuantityRestrictionAmount", VoltType.INTEGER);
+        String restrictingConditionDb = (String) voltDBExternalAccessRights.get("RestrictingCondition", VoltType.STRING);
 
-        if(restrictingAmountDb == null || restrictinConditionDb == null) {
+        if(restrictingAmountDb == null || restrictingConditionDb == null) {
             requestingRights.setQuantityRestriction(null);
-            //externalAccessRights.setRequestingRights(requestingRights);
             return externalAccessRights;
         }
 
         quantityRestriction.setRestrictedAmount(restrictingAmountDb);
         RestrictingCondition restrictingCondition = null;
-        if(restrictinConditionDb != null && restrictinConditionDb.equals("LessThan")) {
+        if(restrictingConditionDb != null && restrictingConditionDb.equals("LessThan")) {
             restrictingCondition = RestrictingCondition.LessThan;
         }
-        else if(restrictinConditionDb != null && restrictinConditionDb.equals("GreaterThan")) {
+        else if(restrictingConditionDb != null && restrictingConditionDb.equals("GreaterThan")) {
             restrictingCondition = RestrictingCondition.GreaterThan;
         }
 
-        if (restrictingAmountDb != null && restrictinConditionDb != null) {
+        if (restrictingAmountDb != null && restrictingConditionDb != null) {
             quantityRestriction.setRestrictingCondition(restrictingCondition);
-            requestingRights.setQuantityRestriction(quantityRestriction);
         }
 
-        //externalAccessRights.setRequestingRights(requestingRights);
+        externalAccessRights.setQuantityRestriction(quantityRestriction);
 
         return externalAccessRights;
     }
