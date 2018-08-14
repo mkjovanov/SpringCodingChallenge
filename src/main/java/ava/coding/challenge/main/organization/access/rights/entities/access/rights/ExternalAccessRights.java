@@ -9,23 +9,23 @@ import java.util.EnumSet;
 public class ExternalAccessRights extends AccessRightsBase implements IEntity {
 
     private String id;
-    private String accessingOrganization;
-    private String sharingOrganization;
+    private String receivingOrganization;
+    private String givingOrganization;
     private QuantityRestriction quantityRestriction;
 
     public ExternalAccessRights() { }
-    public ExternalAccessRights(String id, String accessingOrganization, String sharingOrganization) {
-        this(id, accessingOrganization, sharingOrganization, EnumSet.of(CrudOperation.Read), null);
+    public ExternalAccessRights(String id, String receivingOrganization, String givingOrganization) {
+        this(id, receivingOrganization, givingOrganization, EnumSet.of(CrudOperation.Read), null);
     }
-    public ExternalAccessRights(String id, String accessingOrganization, String sharingOrganization,
+    public ExternalAccessRights(String id, String receivingOrganization, String givingOrganization,
                                 EnumSet<CrudOperation> crudOperationSet) {
-        this(id, accessingOrganization, sharingOrganization, crudOperationSet, null);
+        this(id, receivingOrganization, givingOrganization, crudOperationSet, null);
     }
-    public ExternalAccessRights(String id, String accessingOrganization, String sharingOrganization,
+    public ExternalAccessRights(String id, String receivingOrganization, String givingOrganization,
                                 EnumSet<CrudOperation> crudOperationSet, QuantityRestriction quantityRestriction) {
         this.id = id;
-        this.accessingOrganization = accessingOrganization;
-        this.sharingOrganization = sharingOrganization;
+        this.receivingOrganization = receivingOrganization;
+        this.givingOrganization = givingOrganization;
         this.quantityRestriction = quantityRestriction;
         super.crudOperations = crudOperationSet;
     }
@@ -38,20 +38,20 @@ public class ExternalAccessRights extends AccessRightsBase implements IEntity {
         this.id = id;
     }
 
-    public String getAccessingOrganization() {
-        return accessingOrganization;
+    public String getReceivingOrganization() {
+        return receivingOrganization;
     }
 
-    public void setAccessingOrganization(String accessingOrganization) {
-        this.accessingOrganization = accessingOrganization;
+    public void setReceivingOrganization(String receivingOrganization) {
+        this.receivingOrganization = receivingOrganization;
     }
 
-    public String getSharingOrganization() {
-        return sharingOrganization;
+    public String getGivingOrganization() {
+        return givingOrganization;
     }
 
-    public void setSharingOrganization(String sharingOrganization) {
-        this.sharingOrganization = sharingOrganization;
+    public void setGivingOrganization(String givingOrganization) {
+        this.givingOrganization = givingOrganization;
     }
 
     public QuantityRestriction getQuantityRestriction() {

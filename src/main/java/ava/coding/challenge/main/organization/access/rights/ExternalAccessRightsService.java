@@ -40,7 +40,7 @@ public class ExternalAccessRightsService {
 
     public List<ExternalAccessRights> getExternalAccessRightsByAccessingOrganization(String accessingOrganization) {
         return externalAccessRepository.getAll().stream()
-                .filter(ear -> ear.getAccessingOrganization().equals(accessingOrganization))
+                .filter(ear -> ear.getReceivingOrganization().equals(accessingOrganization))
                 .collect(Collectors.toList());
     }
 }

@@ -5,17 +5,19 @@ DROP TABLE ExternalRights;
 ************************************
 
 CREATE TABLE ExternalRights (
-   ExternalRightsId VARCHAR(64) UNIQUE NOT NULL,
+   ExternalRightsId VARCHAR(64) PRIMARY KEY NOT NULL,
    ReceivingOrganizationId VARCHAR(64) NOT NULL,
    GivingOrganizationId VARCHAR(64) NOT NULL,
    IsCreate TINYINT DEFAULT 0,
    IsRead TINYINT DEFAULT 0,
    IsUpdate TINYINT DEFAULT 0,
    IsDelete TINYINT DEFAULT 0,
-   PRIMARY KEY(ExternalRights)
+   QuantityRestrictionAmount INTEGER,
+   RestrictingCondition VARCHAR(16),
+   CONSTRAINT UN_ExternalRightsId UNIQUE (ReceivingOrganizationId, GivingOrganizationId)
 );
 
 ************************************
-CREATE PROCEDURE getAllExternalRights AS SELECT * FROM ExternalRights 
+CREATE PROCEDURE getAllExternalRights AS SELECT * FROM ExternalRights;
 CREATE PROCEDURE getExternalRights AS SELECT * FROM ExternalRights WHERE ExternalRightsId=?;
 ************************************

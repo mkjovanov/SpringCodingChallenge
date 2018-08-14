@@ -41,7 +41,7 @@ public class AccessRightsService {
             Organization loggedInUsesOrganization = organizationService.getOrganization(loggedInUser.getOrganization());
             Organization  accessingOrganization = organizationService.getOrganization(organizationId);
             return accessingOrganization.getExternalAccessRightsList().stream()
-                    .filter(e -> e.getSharingOrganization().equals(loggedInUsesOrganization.getId()))
+                    .filter(e -> e.getGivingOrganization().equals(loggedInUsesOrganization.getId()))
                     .findFirst()
                     .get()
                     .getCrudOperations();
@@ -109,10 +109,10 @@ public class AccessRightsService {
         Employee loggedInUser = employeeService.getEmployee("pera.peric");
         Organization organization = organizationService.getOrganization(loggedInUser.getOrganization());
         boolean isExternalRightsMatch = organization.getExternalAccessRightsList().stream()
-                .anyMatch(x -> x.getSharingOrganization().equals(organizationId));
+                .anyMatch(x -> x.getGivingOrganization().equals(organizationId));
         return isExternalRightsMatch &&
                 organization.getExternalAccessRightsList().stream()
-                .filter(x -> x.getSharingOrganization().equals(organizationId))
+                .filter(x -> x.getGivingOrganization().equals(organizationId))
                 .findFirst().get()
                 .getCrudOperations().stream()
                 .anyMatch(y -> y.equals(crudOperation));
@@ -124,7 +124,7 @@ public class AccessRightsService {
         QuantityRestriction quantityRestriction =
                 organizationService.getOrganization(loggedInUser.getOrganization())
                         .getExternalAccessRightsList().stream()
-                        .filter(x -> x.getSharingOrganization().equals(organizationId))
+                        .filter(x -> x.getGivingOrganization().equals(organizationId))
                         .findFirst().get().getQuantityRestriction();
 
         if (isQuantityRestrictionAvailable(quantityRestriction)) {

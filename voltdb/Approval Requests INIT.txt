@@ -4,7 +4,7 @@ DROP PROCEDURE getApprovalRequest;
 DROP TABLE ApprovalRequests;
 ************************************
 CREATE TABLE ApprovalRequests (
-   ApprovalRequestId VARCHAR(64) UNIQUE NOT NULL,
+   ApprovalRequestId VARCHAR(64) PRIMARY KEY NOT NULL,
    RequestingOrganizationId VARCHAR(64) NOT NULL,
    SharingOrganizationId VARCHAR(64) NOT NULL,
    IsCreate TINYINT DEFAULT 0,
@@ -13,7 +13,7 @@ CREATE TABLE ApprovalRequests (
    IsDelete TINYINT DEFAULT 0,
    QuantityRestrictionAmount INTEGER,
    RestrictingCondition VARCHAR(16),
-   PRIMARY KEY(ApprovalRequestId)
+   CONSTRAINT UN_ApprovalRequestId UNIQUE (RequestingOrganizationId, SharingOrganizationId)
 );
 ************************************
 CREATE PROCEDURE getAllApprovalRequests AS SELECT * FROM ApprovalRequests;

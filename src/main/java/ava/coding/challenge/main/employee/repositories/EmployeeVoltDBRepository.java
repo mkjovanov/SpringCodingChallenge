@@ -168,16 +168,16 @@ public class EmployeeVoltDBRepository extends IRepository<Employee> {
 
         InternalAccessRights internalAccessRights = new InternalAccessRights();
         EnumSet<CrudOperation> crudOperations = EnumSet.noneOf(CrudOperation.class);
-        if((Integer) voltDBEmployee.get("InternalCreate", VoltType.TINYINT) == 1 ? true : false){
+        if((Byte) voltDBEmployee.get("InternalCreate", VoltType.TINYINT) == 1 ? true : false){
             crudOperations.add(CrudOperation.Create);
         }
-        if((Integer) voltDBEmployee.get("InternalRead", VoltType.TINYINT) == 1 ? true : false) {
+        if((Byte) voltDBEmployee.get("InternalRead", VoltType.TINYINT) == 1 ? true : false) {
             crudOperations.add(CrudOperation.Read);
         }
-        if((Integer) voltDBEmployee.get("InternalUpdate", VoltType.TINYINT) == 1 ? true : false) {
+        if((Byte) voltDBEmployee.get("InternalUpdate", VoltType.TINYINT) == 1 ? true : false) {
             crudOperations.add(CrudOperation.Update);
         }
-        if((Integer) voltDBEmployee.get("InternalDelete", VoltType.TINYINT) == 1 ? true : false){
+        if((Byte) voltDBEmployee.get("InternalDelete", VoltType.TINYINT) == 1 ? true : false){
             crudOperations.add(CrudOperation.Delete);
         }
         internalAccessRights.setCrudOperations(crudOperations);
