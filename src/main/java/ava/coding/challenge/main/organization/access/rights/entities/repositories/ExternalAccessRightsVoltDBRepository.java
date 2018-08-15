@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public class ExternalAccessRightsVoltDBRepository extends IRepository<ExternalAccessRights> {
@@ -72,28 +73,75 @@ public class ExternalAccessRightsVoltDBRepository extends IRepository<ExternalAc
 
     @Override
     public void add(ExternalAccessRights newEntity) {
-
+        try {
+            if (newEntity.getId() == null) {
+                newEntity.setId(UUID.randomUUID().toString());
+            }
+            QuantityRestriction quantityRestriction = newEntity.getQuantityRestriction();
+            EnumSet<CrudOperation> crudOperations = newEntity.getCrudOperations();
+            client.callProcedure("EXTERNALRIGHTS.insert",
+                    newEntity.getId(),
+                    newEntity.getReceivingOrganization(),
+                    newEntity.getGivingOrganization(),
+                    crudOperations.contains(CrudOperation.Create) == true ? 1 : 0,
+                    crudOperations.contains(CrudOperation.Read) == true ? 1 : 0,
+                    crudOperations.contains(CrudOperation.Update) == true ? 1 : 0,
+                    crudOperations.contains(CrudOperation.Delete) == true ? 1 : 0,
+                    quantityRestriction == null ? null : quantityRestriction.getRestrictedAmount(),
+                    quantityRestriction == null ? null : String.valueOf(quantityRestriction.getRestrictingCondition()));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            //client.drain();
+            //client.close();
+        }
     }
 
     @Override
     public void update(String id, ExternalAccessRights updatedEntity) {
-
+        try {
+            if (updatedEntity.getId() == null) {
+                updatedEntity.setId(UUID.randomUUID().toString());
+            }
+            QuantityRestriction quantityRestriction = updatedEntity.getQuantityRestriction();
+            EnumSet<CrudOperation> crudOperations = updatedEntity.getCrudOperations();
+            client.callProcedure("EXTERNALRIGHTS.update",
+                    updatedEntity.getId(),
+                    updatedEntity.getReceivingOrganization(),
+                    updatedEntity.getGivingOrganization(),
+                    crudOperations.contains(CrudOperation.Create) == true ? 1 : 0,
+                    crudOperations.contains(CrudOperation.Read) == true ? 1 : 0,
+                    crudOperations.contains(CrudOperation.Update) == true ? 1 : 0,
+                    crudOperations.contains(CrudOperation.Delete) == true ? 1 : 0,
+                    quantityRestriction == null ? null : quantityRestriction.getRestrictedAmount(),
+                    quantityRestriction == null ? null : String.valueOf(quantityRestriction.getRestrictingCondition()),
+                    id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            //client.drain();
+            //client.close();
+        }
     }
 
     @Override
     public void delete(String id) {
-
+        try {
+            client.callProcedure("EXTERNALRIGHTS.delete", id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            //client.drain();
+            //client.close();
+        }
     }
 
     private ExternalAccessRights initializeExternalAccessRights(VoltTable voltDBExternalAccessRights) {
         ExternalAccessRights externalAccessRights = new ExternalAccessRights();
-
         externalAccessRights.setId((String) voltDBExternalAccessRights.get("ExternalRightsId", VoltType.STRING));
         externalAccessRights.setReceivingOrganization((String) voltDBExternalAccessRights.get("ReceivingOrganizationId", VoltType.STRING));
-        externalAccessRights.setGivingOrganization((String) voltDBExternalAccessRights.get("GivingOrganization", VoltType.STRING));
+        externalAccessRights.setGivingOrganization((String) voltDBExternalAccessRights.get("GivingOrganizationId", VoltType.STRING));
 
-        RequestingRights requestingRights = new RequestingRights();
-        requestingRights.setSharingOrganization((String) voltDBExternalAccessRights.get("SharingOrganizationId", VoltType.STRING));
         EnumSet<CrudOperation> crudOperations = EnumSet.noneOf(CrudOperation.class);
         if((Byte) voltDBExternalAccessRights.get("IsCreate", VoltType.TINYINT) == 1 ? true : false){
             crudOperations.add(CrudOperation.Create);
@@ -107,17 +155,16 @@ public class ExternalAccessRightsVoltDBRepository extends IRepository<ExternalAc
         if((Byte) voltDBExternalAccessRights.get("IsDelete", VoltType.TINYINT) == 1 ? true : false){
             crudOperations.add(CrudOperation.Delete);
         }
-        requestingRights.setCrudOperations(crudOperations);
+        externalAccessRights.setCrudOperations(crudOperations);
 
-        QuantityRestriction quantityRestriction = new QuantityRestriction();
         Integer restrictingAmountDb = (Integer) voltDBExternalAccessRights.get("QuantityRestrictionAmount", VoltType.INTEGER);
         String restrictingConditionDb = (String) voltDBExternalAccessRights.get("RestrictingCondition", VoltType.STRING);
-
         if(restrictingAmountDb == null || restrictingConditionDb == null) {
-            requestingRights.setQuantityRestriction(null);
+            externalAccessRights.setQuantityRestriction(null);
             return externalAccessRights;
         }
 
+        QuantityRestriction quantityRestriction = new QuantityRestriction();
         quantityRestriction.setRestrictedAmount(restrictingAmountDb);
         RestrictingCondition restrictingCondition = null;
         if(restrictingConditionDb != null && restrictingConditionDb.equals("LessThan")) {
@@ -130,7 +177,6 @@ public class ExternalAccessRightsVoltDBRepository extends IRepository<ExternalAc
         if (restrictingAmountDb != null && restrictingConditionDb != null) {
             quantityRestriction.setRestrictingCondition(restrictingCondition);
         }
-
         externalAccessRights.setQuantityRestriction(quantityRestriction);
 
         return externalAccessRights;

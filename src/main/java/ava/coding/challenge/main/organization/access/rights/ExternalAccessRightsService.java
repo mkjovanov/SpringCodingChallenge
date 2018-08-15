@@ -2,7 +2,7 @@ package ava.coding.challenge.main.organization.access.rights;
 
 import ava.coding.challenge.helpers.NullHelper;
 import ava.coding.challenge.main.organization.access.rights.entities.access.rights.ExternalAccessRights;
-import ava.coding.challenge.main.organization.access.rights.entities.repositories.ExternalAccessRightsInMemoryRepository;
+import ava.coding.challenge.main.organization.access.rights.entities.repositories.ExternalAccessRightsVoltDBRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class ExternalAccessRightsService {
 
     @Autowired
-    private ExternalAccessRightsInMemoryRepository externalAccessRepository;
+    private ExternalAccessRightsVoltDBRepository externalAccessRepository;
     @Autowired
     private NullHelper nullHelper;
 

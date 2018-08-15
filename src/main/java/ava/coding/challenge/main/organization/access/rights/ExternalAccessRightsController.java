@@ -38,7 +38,7 @@ public class ExternalAccessRightsController {
         externalAccessRightsService.updatedExternalAccessRights(id, updatedExternalAccessRights);
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/master-organizations/external-access-rights/{id")
+    @RequestMapping(method = RequestMethod.DELETE, value = "/master-organizations/external-access-rights/{id}")
     public void deleteExternalAccessRights(@PathVariable("id") String id) {
         externalAccessRightsService.deleteExternalAccessRights(id);
     }
