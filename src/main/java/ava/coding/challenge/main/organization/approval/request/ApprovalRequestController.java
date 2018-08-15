@@ -42,4 +42,8 @@ public class ApprovalRequestController {
         approvalRequestService.deleteApprovalRequest(id);
     }
 
+    @RequestMapping(method = RequestMethod.DELETE, value = "/master-organizations/approval-requests")
+    public void deleteAllApprovalRequests() {
+        approvalRequestService.deleteAllApprovalRequests();
+    }
 }

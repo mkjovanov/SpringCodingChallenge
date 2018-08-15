@@ -138,6 +138,17 @@ public class ApprovalRequestVoltDBRepository extends IRepository<ApprovalRequest
         }
     }
 
+    public void deleteAll() {
+        try {
+            client.callProcedure("deleteAllApprovalRequests");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            //client.drain();
+            //client.close();
+        }
+    }
+
     private ApprovalRequest initializeApprovalRequest(VoltTable voltDBApprovalRequest) {
         ApprovalRequest approvalRequest = new ApprovalRequest();
 

@@ -3,6 +3,7 @@ package ava.coding.challenge.main.organization.access.rights;
 import ava.coding.challenge.main.organization.access.rights.entities.CrudOperation;
 import ava.coding.challenge.main.organization.access.rights.entities.QuantityRestriction;
 import ava.coding.challenge.main.organization.access.rights.entities.RestrictingCondition;
+import ava.coding.challenge.main.organization.access.rights.entities.access.rights.ExternalAccessRights;
 import ava.coding.challenge.main.organization.approval.request.ApprovalRequestService;
 import ava.coding.challenge.main.organization.approval.request.entities.ApprovalRequest;
 import ava.coding.challenge.main.employee.EmployeeService;
@@ -31,6 +32,8 @@ public class AccessRightsService {
     private OrganizationService organizationService;
     @Autowired
     private ApprovalRequestService approvalRequestService;
+    @Autowired
+    private ExternalAccessRightsService externalAccessRightsService;
 
     public EnumSet<CrudOperation> getCurrentUserAccessRights(String organizationId) {
         Employee loggedInUser = employeeService.getEmployee("pera.peric");
@@ -50,10 +53,11 @@ public class AccessRightsService {
 
     public void approveRequest(String id) {
         ApprovalRequest approvalRequest = approvalRequestService.getApprovalRequest(id);
-        Organization requestingOrganization = organizationService.getOrganization(approvalRequest.getRequestingOrganization());
-        //TODO: Change to add to external access rights repo
-        //requestingOrganization.getExternalAccessRightsList().add(approvalRequest.getRequestingRights());
-        organizationService.updateOrganization(requestingOrganization.getId(), requestingOrganization);
+        //Organization requestingOrganization = organizationService.getOrganization(approvalRequest.getRequestingOrganization());
+        ExternalAccessRights externalAccessRights = initializeExternalRights(approvalRequest);
+
+        externalAccessRightsService.addExternalAccessRights(externalAccessRights);
+        //organizationService.updateOrganization(requestingOrganization.getId(), requestingOrganization);
         approvalRequestService.deleteApprovalRequest(id);
     }
 
@@ -166,5 +170,14 @@ public class AccessRightsService {
         return productService.getAllProductsBypassAccessRights(organizationId).stream()
                 .filter(p -> p.getStock() > restrictedAmmount)
                 .collect(Collectors.toList());
+    }
+
+    private ExternalAccessRights initializeExternalRights(ApprovalRequest approvalRequest) {
+        ExternalAccessRights retVal = new ExternalAccessRights();
+        retVal.setReceivingOrganization(approvalRequest.getRequestingOrganization());
+        retVal.setGivingOrganization(approvalRequest.getRequestingRights().getSharingOrganization());
+        retVal.setCrudOperations(approvalRequest.getRequestingRights().getCrudOperations());
+        retVal.setQuantityRestriction(approvalRequest.getRequestingRights().getQuantityRestriction());
+        return retVal;
     }
 }

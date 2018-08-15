@@ -1,8 +1,12 @@
 package ava.coding.challenge.main.organization.repositories;
 
+import ava.coding.challenge.main.organization.access.rights.ExternalAccessRightsService;
+import ava.coding.challenge.main.organization.access.rights.entities.access.rights.ExternalAccessRights;
 import ava.coding.challenge.main.organization.entities.Organization;
 import ava.coding.challenge.repository.IRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.voltdb.VoltTable;
 import org.voltdb.VoltType;
 import org.voltdb.client.Client;
@@ -22,6 +26,9 @@ public class OrganizationVoltDBRepository extends IRepository<Organization> {
     Client client = null;
     ClientConfig config = null;
 
+    @Autowired
+    ExternalAccessRightsService externalAccessRightsService;
+
     public OrganizationVoltDBRepository() throws IOException {
         config = new ClientConfig("usr", "qlZ6rZT1");
         client = ClientFactory.createClient(config);
@@ -36,10 +43,16 @@ public class OrganizationVoltDBRepository extends IRepository<Organization> {
             voltDBOrganizationList = client.callProcedure("getAllOrganizations").getResults()[0];
             voltDBOrganizationList.resetRowPosition();
             while(voltDBOrganizationList.advanceRow()) {
-                Organization o = new Organization();
-                o.setId((String) voltDBOrganizationList.get("OrganizationId", VoltType.STRING));
-                o.setName((String) voltDBOrganizationList.get("Name", VoltType.STRING));
-                organizationList.add(o);
+                Organization organization = new Organization();
+                organization.setId((String) voltDBOrganizationList.get("OrganizationId", VoltType.STRING));
+                organization.setName((String) voltDBOrganizationList.get("Name", VoltType.STRING));
+
+                List<ExternalAccessRights> externalAccessRights;
+                externalAccessRights = externalAccessRightsService
+                        .getExternalAccessRightsByAccessingOrganization(organization.getId());
+                organization.setExternalAccessRightsList(externalAccessRights);
+
+                organizationList.add(organization);
             }
 
             return organizationList;

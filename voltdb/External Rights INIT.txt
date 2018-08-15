@@ -1,9 +1,9 @@
 ************************************
 DROP PROCEDURE getAllExternalRights;
 DROP PROCEDURE getExternalRights;
+DROP PROCEDURE getAllExternalRights;
 DROP TABLE ExternalRights;
 ************************************
-
 CREATE TABLE ExternalRights (
    ExternalRightsId VARCHAR(64) PRIMARY KEY NOT NULL,
    ReceivingOrganizationId VARCHAR(64) NOT NULL,
@@ -16,8 +16,8 @@ CREATE TABLE ExternalRights (
    RestrictingCondition VARCHAR(16),
    CONSTRAINT UN_ExternalRightsId UNIQUE (ReceivingOrganizationId, GivingOrganizationId)
 );
-
 ************************************
 CREATE PROCEDURE getAllExternalRights AS SELECT * FROM ExternalRights;
 CREATE PROCEDURE getExternalRights AS SELECT * FROM ExternalRights WHERE ExternalRightsId=?;
+CREATE PROCEDURE deleteAllExternalRights AS DELETE FROM ExternalRights;
 ************************************

@@ -1,6 +1,8 @@
 ************************************
 DROP PROCEDURE getAllApprovalRequests;
 DROP PROCEDURE getApprovalRequest;
+DROP PROCEDURE getApprovalRequestByRequestingOrganizationId;
+DROP PROCEDURE deleteAllApprovalRequests;
 DROP TABLE ApprovalRequests;
 ************************************
 CREATE TABLE ApprovalRequests (
@@ -19,5 +21,5 @@ CREATE TABLE ApprovalRequests (
 CREATE PROCEDURE getAllApprovalRequests AS SELECT * FROM ApprovalRequests;
 CREATE PROCEDURE getApprovalRequest AS SELECT * FROM ApprovalRequests WHERE ApprovalRequestId=?;
 CREATE PROCEDURE getApprovalRequestByRequestingOrganizationId AS SELECT * FROM ApprovalRequests WHERE RequestingOrganizationId=?;
-CREATE PROCEDURE getApprovalRequestBySharingOrganizationId AS SELECT * FROM ApprovalRequests WHERE SharingOrganizationId=?;
+CREATE PROCEDURE deleteAllApprovalRequests AS DELETE FROM ApprovalRequests;
 ************************************

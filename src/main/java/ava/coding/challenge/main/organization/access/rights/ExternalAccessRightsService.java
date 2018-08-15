@@ -38,9 +38,12 @@ public class ExternalAccessRightsService {
         externalAccessRepository.delete(id);
     }
 
-    public List<ExternalAccessRights> getExternalAccessRightsByAccessingOrganization(String accessingOrganization) {
-        return externalAccessRepository.getAll().stream()
-                .filter(ear -> ear.getReceivingOrganization().equals(accessingOrganization))
-                .collect(Collectors.toList());
+    public void deleteAllExternalAccessRights() {
+        externalAccessRepository.deleteAll();
+    }
+
+    public List<ExternalAccessRights> getExternalAccessRightsByAccessingOrganization(String receivingOrganization) {
+        return externalAccessRepository
+                .getByReceivingOrganization(receivingOrganization).stream().collect(Collectors.toList());
     }
 }

@@ -71,6 +71,26 @@ public class ExternalAccessRightsVoltDBRepository extends IRepository<ExternalAc
         }
     }
 
+    public List<ExternalAccessRights> getByReceivingOrganization(String receivingOrganization) {
+        VoltTable voltDBExternalRightsList;
+        ArrayList<ExternalAccessRights> externalRightsList = new ArrayList<>();
+        try {
+            voltDBExternalRightsList = client.callProcedure(
+                    "getExternalRightsByReceivingOrganization", receivingOrganization).getResults()[0];
+            voltDBExternalRightsList.resetRowPosition();
+            while (voltDBExternalRightsList.advanceRow()) {
+                ExternalAccessRights approvalRequest = initializeExternalAccessRights(voltDBExternalRightsList);
+                externalRightsList.add(approvalRequest);
+            }
+            return externalRightsList;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            //client.drain();
+            //client.close();
+        }
+    }
+
     @Override
     public void add(ExternalAccessRights newEntity) {
         try {
@@ -128,6 +148,17 @@ public class ExternalAccessRightsVoltDBRepository extends IRepository<ExternalAc
     public void delete(String id) {
         try {
             client.callProcedure("EXTERNALRIGHTS.delete", id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            //client.drain();
+            //client.close();
+        }
+    }
+
+    public void deleteAll() {
+        try {
+            client.callProcedure("deleteAllExternalRights");
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {

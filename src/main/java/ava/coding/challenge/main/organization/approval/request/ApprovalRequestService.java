@@ -36,4 +36,8 @@ public class ApprovalRequestService {
     public void deleteApprovalRequest(String id) {
         approvalRequestRepository.delete(id);
     }
+
+    public void deleteAllApprovalRequests() {
+        approvalRequestRepository.deleteAll();
+    }
 }

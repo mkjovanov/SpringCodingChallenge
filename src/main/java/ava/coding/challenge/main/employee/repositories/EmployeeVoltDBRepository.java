@@ -81,6 +81,9 @@ public class EmployeeVoltDBRepository extends IRepository<Employee> {
             if(newEntity.getId() == null) {
                 newEntity.setId(UUID.randomUUID().toString());
             }
+            if(newEntity.getInternalAccessRights() == null) {
+                newEntity.setInternalAccessRights(new InternalAccessRights());
+            }
 
             client.callProcedure("EMPLOYEES.insert",
                                      newEntity.getId(),
