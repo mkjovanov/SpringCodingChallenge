@@ -14,4 +14,5 @@ CREATE TABLE Products (
 ************************************
 CREATE PROCEDURE getAllProducts AS SELECT * FROM products;
 CREATE PROCEDURE getProduct AS SELECT * FROM products WHERE ProductId=?;
+CREATE PROCEDURE getProductsByOrganizationId AS SELECT * FROM products WHERE OrganizationId=?;
 ************************************

@@ -4,6 +4,7 @@ import ava.coding.challenge.main.organization.access.rights.entities.CrudOperati
 import ava.coding.challenge.main.organization.access.rights.entities.QuantityRestriction;
 import ava.coding.challenge.main.organization.access.rights.entities.RestrictingCondition;
 import ava.coding.challenge.main.organization.access.rights.entities.access.rights.ExternalAccessRights;
+import ava.coding.challenge.main.organization.approval.request.entities.ApprovalRequest;
 import ava.coding.challenge.main.organization.approval.request.entities.RequestingRights;
 import ava.coding.challenge.repository.IRepository;
 import org.springframework.stereotype.Repository;
@@ -99,7 +100,7 @@ public class ExternalAccessRightsVoltDBRepository extends IRepository<ExternalAc
             }
             QuantityRestriction quantityRestriction = newEntity.getQuantityRestriction();
             EnumSet<CrudOperation> crudOperations = newEntity.getCrudOperations();
-            client.callProcedure("EXTERNALRIGHTS.insert",
+            client.callProcedure("EXTERNALRIGHTS.upsert",
                     newEntity.getId(),
                     newEntity.getReceivingOrganization(),
                     newEntity.getGivingOrganization(),
@@ -146,8 +147,11 @@ public class ExternalAccessRightsVoltDBRepository extends IRepository<ExternalAc
 
     @Override
     public void delete(String id) {
+        ExternalAccessRights externalAccessRights = get(id);
         try {
-            client.callProcedure("EXTERNALRIGHTS.delete", id);
+            client.callProcedure("EXTERNALRIGHTS.delete",
+                                    externalAccessRights.getGivingOrganization(),
+                                    externalAccessRights.getReceivingOrganization());
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {

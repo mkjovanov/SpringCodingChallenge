@@ -82,7 +82,7 @@ public class ApprovalRequestVoltDBRepository extends IRepository<ApprovalRequest
             }
             RequestingRights requestingRights = newEntity.getRequestingRights();
             QuantityRestriction quantityRestriction = requestingRights.getQuantityRestriction();
-            client.callProcedure("APPROVALREQUESTS.insert",
+            client.callProcedure("APPROVALREQUESTS.upsert",
                                 newEntity.getId(),
                                 newEntity.getRequestingOrganization(),
                                 requestingRights.getSharingOrganization(),
@@ -128,8 +128,11 @@ public class ApprovalRequestVoltDBRepository extends IRepository<ApprovalRequest
 
     @Override
     public void delete(String id) {
+        ApprovalRequest approvalRequest = get(id);
         try {
-            client.callProcedure("APPROVALREQUESTS.delete", id);
+            client.callProcedure("APPROVALREQUESTS.delete",
+                                    approvalRequest.getRequestingOrganization(),
+                                    approvalRequest.getRequestingRights().getSharingOrganization());
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {

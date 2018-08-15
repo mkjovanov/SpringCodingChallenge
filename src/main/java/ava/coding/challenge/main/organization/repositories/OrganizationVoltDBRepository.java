@@ -72,10 +72,14 @@ public class OrganizationVoltDBRepository extends IRepository<Organization> {
             voltDBOrganization = client.callProcedure("getOrganization", id).getResults()[0];
             voltDBOrganization.resetRowPosition();
             while(voltDBOrganization.advanceRow()) {
-                //TODO: Set external rights
                 organization = new Organization();
                 organization.setId((String) voltDBOrganization.get("OrganizationId", VoltType.STRING));
                 organization.setName((String) voltDBOrganization.get("Name", VoltType.STRING));
+
+                List<ExternalAccessRights> externalAccessRights;
+                externalAccessRights = externalAccessRightsService
+                        .getExternalAccessRightsByAccessingOrganization(organization.getId());
+                organization.setExternalAccessRightsList(externalAccessRights);
             }
 
             return organization;

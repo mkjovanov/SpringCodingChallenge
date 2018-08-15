@@ -41,10 +41,10 @@ public class AccessRightsService {
             return loggedInUser.getInternalAccessRights().getCrudOperations();
         }
         else {
-            Organization loggedInUsesOrganization = organizationService.getOrganization(loggedInUser.getOrganization());
+            Organization loggedInUserOrganization = organizationService.getOrganization(loggedInUser.getOrganization());
             Organization  accessingOrganization = organizationService.getOrganization(organizationId);
-            return accessingOrganization.getExternalAccessRightsList().stream()
-                    .filter(e -> e.getGivingOrganization().equals(loggedInUsesOrganization.getId()))
+            return loggedInUserOrganization.getExternalAccessRightsList().stream()
+                    .filter(e -> e.getGivingOrganization().equals(accessingOrganization.getId()))
                     .findFirst()
                     .get()
                     .getCrudOperations();
@@ -111,7 +111,13 @@ public class AccessRightsService {
 
     public boolean isExternalOperationAvailable(CrudOperation crudOperation, String organizationId) {
         Employee loggedInUser = employeeService.getEmployee("pera.peric");
+
         Organization organization = organizationService.getOrganization(loggedInUser.getOrganization());
+        if(organization.getExternalAccessRightsList() == null ||
+                organization.getExternalAccessRightsList().isEmpty()) {
+            return false;
+        }
+
         boolean isExternalRightsMatch = organization.getExternalAccessRightsList().stream()
                 .anyMatch(x -> x.getGivingOrganization().equals(organizationId));
         return isExternalRightsMatch &&

@@ -7,6 +7,7 @@ import ava.coding.challenge.main.organization.access.rights.entities.access.righ
 import ava.coding.challenge.main.product.entities.Product;
 import ava.coding.challenge.main.product.entities.ProductResponse;
 import ava.coding.challenge.main.product.repositories.ProductInMemoryRepository;
+import ava.coding.challenge.main.product.repositories.ProductVoltDBRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,8 @@ import java.util.List;
 public class ProductService {
 
     @Autowired
-    private ProductInMemoryRepository productRepository;
+    private ProductVoltDBRepository productRepository;
+
     @Autowired
     private AccessRightsService accessRightsService;
     @Autowired
@@ -30,7 +32,7 @@ public class ProductService {
         List<Product> availableProducts = accessRightsService.filterByAccessRights(organizationId);
         if (availableProducts.isEmpty()) {
             return new ResponseEntity("Reading products from organization: '" + organizationId +
-                    "' is forbidden for this user",
+                    "' is forbidden for this user or the product list is empty.",
                     HttpStatus.FORBIDDEN);
         }
 
@@ -44,7 +46,7 @@ public class ProductService {
     public ResponseEntity<Product> getProduct(String organizationId, String id) {
         if (!accessRightsService.isCrudOperationAvailable(CrudOperation.Read, organizationId)) {
             return new ResponseEntity("Reading product from organization: '" + organizationId +
-                    "' is forbidden for this user",
+                    "' is forbidden for this user.",
                     HttpStatus.FORBIDDEN);
         }
         ProductResponse productResponse = new ProductResponse(
@@ -83,7 +85,7 @@ public class ProductService {
     }
 
     public List<Product> getAllProductsBypassAccessRights(String organizationId) {
-        return productRepository.getAllByOrganizationId(organizationId);
+        return productRepository.getProductsByOrganizationId(organizationId);
     }
 
     public Product getProductBypassAccessRights(String id) {

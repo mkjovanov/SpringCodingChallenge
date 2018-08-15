@@ -114,10 +114,10 @@ public class EmployeeVoltDBRepository extends IRepository<Employee> {
                                     updatedEntity.getFirstName(),
                                     updatedEntity.getLastName(),
                                     updatedEntity.getOrganization(),
-                                    updatedEntity.getInternalAccessRights().getCrudOperations().contains(CrudOperation.Create),
-                                    updatedEntity.getInternalAccessRights().getCrudOperations().contains(CrudOperation.Read),
-                                    updatedEntity.getInternalAccessRights().getCrudOperations().contains(CrudOperation.Update),
-                                    updatedEntity.getInternalAccessRights().getCrudOperations().contains(CrudOperation.Delete),
+                                    updatedEntity.getInternalAccessRights().getCrudOperations().contains(CrudOperation.Create) == true ? 1 : 0,
+                                    updatedEntity.getInternalAccessRights().getCrudOperations().contains(CrudOperation.Read) == true ? 1 : 0,
+                                    updatedEntity.getInternalAccessRights().getCrudOperations().contains(CrudOperation.Update) == true ? 1 : 0,
+                                    updatedEntity.getInternalAccessRights().getCrudOperations().contains(CrudOperation.Delete) == true ? 1 : 0,
                                     id);
         } catch (Exception e) {
             throw new RuntimeException(e);

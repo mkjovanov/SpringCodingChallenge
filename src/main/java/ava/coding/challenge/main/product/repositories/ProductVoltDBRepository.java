@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Repository
 public class ProductVoltDBRepository extends IRepository<Product> {
@@ -35,15 +36,9 @@ public class ProductVoltDBRepository extends IRepository<Product> {
             voltDBProductList = client.callProcedure("getAllProducts").getResults()[0];
             voltDBProductList.resetRowPosition();
             while(voltDBProductList.advanceRow()) {
-                Product product = new Product();
-                product.setId((String) voltDBProductList.get("ProductId", VoltType.STRING));
-                product.setName((String) voltDBProductList.get("Name", VoltType.STRING));
-                product.setOrganization((String) voltDBProductList.get("OrganizationId", VoltType.STRING));
-                product.setPrice((float) voltDBProductList.get("Price", VoltType.FLOAT));
-                product.setStock((int) voltDBProductList.get("Stock", VoltType.INTEGER));
-                productList.add(product);
+                voltDBProductList.resetRowPosition();
+                productList.add(initializeProduct(voltDBProductList));
             }
-
             return productList;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -61,13 +56,27 @@ public class ProductVoltDBRepository extends IRepository<Product> {
             voltDBProduct = client.callProcedure("getProduct", id).getResults()[0];
             voltDBProduct.resetRowPosition();
             while (voltDBProduct.advanceRow()) {
-                product.setId((String) voltDBProduct.get("ProductId", VoltType.STRING));
-                product.setName((String) voltDBProduct.get("Name", VoltType.STRING));
-                product.setOrganization((String) voltDBProduct.get("OrganizationId", VoltType.STRING));
-                product.setPrice((float) voltDBProduct.get("Price", VoltType.FLOAT));
-                product.setStock((int) voltDBProduct.get("Stock", VoltType.INTEGER));
+                product = initializeProduct(voltDBProduct);
             }
             return product;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            //client.drain();
+            //client.close();
+        }
+    }
+
+    public List<Product> getProductsByOrganizationId(String organizationId) {
+        VoltTable voltDBProductList;
+        ArrayList<Product> productList = new ArrayList<>();
+        try {
+            voltDBProductList = client.callProcedure("getProductsByOrganizationId", organizationId).getResults()[0];
+            voltDBProductList.resetRowPosition();
+            while (voltDBProductList.advanceRow()) {
+                productList.add(initializeProduct(voltDBProductList));
+            }
+            return productList;
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
@@ -82,7 +91,7 @@ public class ProductVoltDBRepository extends IRepository<Product> {
             if(newEntity.getId() == null) {
                 newEntity.setId(UUID.randomUUID().toString());
             }
-            client.callProcedure("PRODUCT.insert",
+            client.callProcedure("PRODUCTS.insert",
                     newEntity.getId(), newEntity.getOrganization(), newEntity.getName(),
                     newEntity.getPrice(), newEntity.getStock());
         } catch (Exception e) {
@@ -96,7 +105,7 @@ public class ProductVoltDBRepository extends IRepository<Product> {
     @Override
     public void update(String id, Product updatedEntity) {
         try {
-            client.callProcedure("PRODUCT.insert",
+            client.callProcedure("PRODUCTS.update",
                     updatedEntity.getId(), updatedEntity.getOrganization(), updatedEntity.getName(),
                     updatedEntity.getPrice(), updatedEntity.getStock(), id);
         } catch (Exception e) {
@@ -117,5 +126,15 @@ public class ProductVoltDBRepository extends IRepository<Product> {
             //client.drain();
             //client.close();
         }
+    }
+
+    private Product initializeProduct(VoltTable voltDBProduct) {
+        Product product = new Product();
+        product.setId((String) voltDBProduct.get("ProductId", VoltType.STRING));
+        product.setName((String) voltDBProduct.get("Name", VoltType.STRING));
+        product.setOrganization((String) voltDBProduct.get("OrganizationId", VoltType.STRING));
+        product.setPrice((double) voltDBProduct.get("Price", VoltType.FLOAT));
+        product.setStock((int) voltDBProduct.get("Stock", VoltType.INTEGER));
+        return product;
     }
 }
