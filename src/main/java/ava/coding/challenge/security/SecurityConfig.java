@@ -53,17 +53,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     // Authorization : Role -> Access
     protected void configure(HttpSecurity http) throws Exception {
-            http
-                .authorizeRequests()
-                //.anyRequest().authenticated()
-                .antMatchers(HttpMethod.GET, "/organizations").hasAnyRole("EMPLOYEE", "ORGANIZATION")
-                .antMatchers(HttpMethod.POST, "/organizations").hasRole("ORGANIZATION")
-                .antMatchers(HttpMethod.PUT, "/organizations").hasRole("ORGANIZATION")
-                .antMatchers(HttpMethod.DELETE, "/organizations").hasRole("ORGANIZATION")
-                .antMatchers("/organizations/**").hasAnyRole("ORGANIZATION", "EMPLOYEE")
-                .and().formLogin()
-                .and().httpBasic()
-                .and().csrf().disable()
-                .headers().frameOptions().disable();
+        http.authorizeRequests()
+            .anyRequest().authenticated()
+            .antMatchers(HttpMethod.GET, "/organizations").hasAnyRole("EMPLOYEE", "ORGANIZATION", "MASTER_ORGANIZATIONS")
+            .antMatchers(HttpMethod.POST, "/organizations").hasRole("MASTER_ORGANIZATION")
+            .antMatchers(HttpMethod.PUT, "/organizations").hasRole("MASTER_ORGANIZATION")
+            .antMatchers(HttpMethod.DELETE, "/organizations").hasRole("MASTER_ORGANIZATION")
+            .antMatchers("/organizations/**").hasAnyRole("ORGANIZATION", "EMPLOYEE")
+            .antMatchers("/master-organizations/**").hasRole("MASTER_ORGANIZATION")
+            .and().formLogin()
+            .and().httpBasic()
+            .and().csrf().disable()
+            .headers().frameOptions().disable();
+
+        http.httpBasic()
+            .and()
+            .anonymous()
+            .and()
+            .antMatcher("/");
     }
 }
