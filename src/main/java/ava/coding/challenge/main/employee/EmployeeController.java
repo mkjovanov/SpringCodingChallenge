@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.ws.Response;
 import java.util.List;
 
 @RestController
@@ -15,8 +14,8 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @RequestMapping("/organizations/{organizationId}/employees")
-    public List<Employee> getAllEmployees(@PathVariable String organizationId) {
-        return employeeService.getAllEmployees(organizationId);
+    public List<Employee> getAllEmployeesByOrganization(@PathVariable String organizationId) {
+        return employeeService.getAllEmployeesByOrganization(organizationId);
     }
 
     @RequestMapping("/organizations/{organizationId}/employees/{id}")
@@ -51,5 +50,10 @@ public class EmployeeController {
                                    @RequestBody List<Employee> employeeList) {
         employeeList.forEach(e -> e.setOrganization(organizationId));
         employeeList.forEach(employeeService::addEmployee);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/organizations/employees")
+    public ResponseEntity getAllEmployees() {
+        return employeeService.getAllEmployees();
     }
 }

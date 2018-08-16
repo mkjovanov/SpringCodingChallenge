@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -21,12 +22,16 @@ public class EmployeeService {
     @Autowired
     private NullHelper nullHelper;
 
-    public List<Employee> getAllEmployees(String organizationId) {
+    public List<Employee> getAllEmployeesByOrganization(String organizationId) {
         return employeeRepository.getAllByOrganizationId(organizationId);
     }
 
     public Employee getEmployee(String id) {
         return employeeRepository.get(id);
+    }
+
+    public ResponseEntity getAllEmployees() {
+        return new ResponseEntity<>(employeeRepository.getAll(), HttpStatus.ACCEPTED);
     }
 
     public ResponseEntity addEmployee(Employee newEmployee) {

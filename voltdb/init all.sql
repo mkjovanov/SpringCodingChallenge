@@ -11,6 +11,7 @@ CREATE TABLE Employees (
    PRIMARY KEY(EmployeeId)
 );
 CREATE PROCEDURE getAllEmployees AS SELECT * FROM employees;
+CREATE PROCEDURE getAllEmployeesByOrganization AS SELECT * FROM employees WHERE OrganizationId=?;
 CREATE PROCEDURE getEmployee AS SELECT * FROM employees WHERE EmployeeId=?;
 -- Products
 CREATE TABLE Products (

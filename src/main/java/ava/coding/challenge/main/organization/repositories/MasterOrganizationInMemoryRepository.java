@@ -12,9 +12,7 @@ import java.util.List;
 public class MasterOrganizationInMemoryRepository extends IRepository<MasterOrganization> {
 
     public List<MasterOrganization> masterOrganizationList = new ArrayList<>(Arrays.asList(
-            new MasterOrganization("a", "A"),
-            new MasterOrganization("b", "B"),
-            new MasterOrganization("c", "C")));
+            new MasterOrganization("master.org", "master.org")));
 
     @Override
     public List<MasterOrganization> getAll() {

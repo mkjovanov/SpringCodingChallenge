@@ -1,5 +1,6 @@
 -- Employees
 DROP PROCEDURE getAllEmployees;
+DROP PROCEDURE getAllEmployeesByOrganization;
 DROP PROCEDURE getEmployee;
 DROP TABLE Employees;
 -- Products
