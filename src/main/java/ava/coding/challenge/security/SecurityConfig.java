@@ -48,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         }
         for (Iterator<MasterOrganization> i = allMasterOrganizations.iterator(); i.hasNext();) {
             MasterOrganization item = i.next();
-            authBuilder.withUser(item.getId()).password(item.getId()).roles("MASTER_ORGANIZATION");
+            authBuilder.withUser("mo_" + item.getId()).password("mo_" + item.getId()).roles("MASTER_ORGANIZATION");
         }
     }
 

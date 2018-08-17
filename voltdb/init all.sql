@@ -5,7 +5,7 @@ CREATE TABLE MasterOrganizations (
    PRIMARY KEY(MasterOrganizationId)
 );
 CREATE PROCEDURE getAllMasterOrganizations AS SELECT * FROM masterorganizations;
-CREATE PROCEDURE getMasterOrganizations AS SELECT * FROM organizations WHERE MasterOrganizationId=?;
+CREATE PROCEDURE getMasterOrganization AS SELECT * FROM masterorganizations WHERE MasterOrganizationId=?;
 -- Organizations
 CREATE TABLE Organizations (
    OrganizationId VARCHAR(64) UNIQUE NOT NULL,

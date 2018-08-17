@@ -4,8 +4,6 @@ import ava.coding.challenge.main.organization.access.rights.entities.CrudOperati
 import ava.coding.challenge.main.organization.access.rights.entities.QuantityRestriction;
 import ava.coding.challenge.main.organization.access.rights.entities.RestrictingCondition;
 import ava.coding.challenge.main.organization.access.rights.entities.access.rights.ExternalAccessRights;
-import ava.coding.challenge.main.organization.approval.request.entities.ApprovalRequest;
-import ava.coding.challenge.main.organization.approval.request.entities.RequestingRights;
 import ava.coding.challenge.repository.IRepository;
 import org.springframework.stereotype.Repository;
 import org.voltdb.VoltTable;

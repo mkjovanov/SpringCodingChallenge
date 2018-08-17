@@ -11,6 +11,10 @@ DROP TABLE Products;
 DROP PROCEDURE getAllOrganizations;
 DROP PROCEDURE getOrganization;
 DROP TABLE Organizations;
+-- Master Organizations
+DROP PROCEDURE getAllMasterOrganizations;
+DROP PROCEDURE getMasterOrganization;
+DROP TABLE MasterOrganizations;
 -- External rights
 DROP PROCEDURE getAllExternalRights;
 DROP PROCEDURE getExternalRights;

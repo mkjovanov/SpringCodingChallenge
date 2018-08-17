@@ -3,6 +3,7 @@ package ava.coding.challenge.main.organization;
 import ava.coding.challenge.helpers.NullHelper;
 import ava.coding.challenge.main.organization.entities.MasterOrganization;
 import ava.coding.challenge.main.organization.repositories.MasterOrganizationInMemoryRepository;
+import ava.coding.challenge.main.organization.repositories.MasterOrganizationVoltDBRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,7 @@ import java.util.List;
 public class MasterOrganizationService {
 
     @Autowired
-    private MasterOrganizationInMemoryRepository masterOrganizationInMemoryRepository;
+    private MasterOrganizationVoltDBRepository masterOrganizationInMemoryRepository;
     @Autowired
     private NullHelper nullHelper;
 
