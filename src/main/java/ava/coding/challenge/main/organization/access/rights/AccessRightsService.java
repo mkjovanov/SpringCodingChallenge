@@ -14,6 +14,8 @@ import ava.coding.challenge.main.product.ProductService;
 import ava.coding.challenge.main.product.entities.Product;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -36,7 +38,7 @@ public class AccessRightsService {
     private ExternalAccessRightsService externalAccessRightsService;
 
     public EnumSet<CrudOperation> getCurrentUserAccessRights(String organizationId) {
-        Employee loggedInUser = employeeService.getEmployee("pera.peric");
+        Employee loggedInUser = GetLoggedInUser();
         if (loggedInUser.getOrganization().equals(organizationId)) {
             return loggedInUser.getInternalAccessRights().getCrudOperations();
         }
@@ -53,11 +55,9 @@ public class AccessRightsService {
 
     public void approveRequest(String id) {
         ApprovalRequest approvalRequest = approvalRequestService.getApprovalRequest(id);
-        //Organization requestingOrganization = organizationService.getOrganization(approvalRequest.getRequestingOrganization());
         ExternalAccessRights externalAccessRights = initializeExternalRights(approvalRequest);
 
         externalAccessRightsService.addExternalAccessRights(externalAccessRights);
-        //organizationService.updateOrganization(requestingOrganization.getId(), requestingOrganization);
         approvalRequestService.deleteApprovalRequest(id);
     }
 
@@ -97,21 +97,18 @@ public class AccessRightsService {
     }
 
     public boolean isInternalAccessRight(String organizationId) {
-        Employee loggedInUser = employeeService.getEmployee("pera.peric");
-        return loggedInUser.getOrganization().equals(organizationId);
+        return GetLoggedInUser().getOrganization().equals(organizationId);
     }
 
     public boolean isInternalOperationAvailable(CrudOperation crudOperation) {
-        Employee loggedInUser = employeeService.getEmployee("pera.peric");
-        return loggedInUser
+        return GetLoggedInUser()
                 .getInternalAccessRights()
                 .getCrudOperations().stream()
                 .anyMatch(c -> c.equals(crudOperation));
     }
 
     public boolean isExternalOperationAvailable(CrudOperation crudOperation, String organizationId) {
-        Employee loggedInUser = employeeService.getEmployee("pera.peric");
-
+        Employee loggedInUser = GetLoggedInUser();
         Organization organization = organizationService.getOrganization(loggedInUser.getOrganization());
         if(organization.getExternalAccessRightsList() == null ||
                 organization.getExternalAccessRightsList().isEmpty()) {
@@ -129,7 +126,7 @@ public class AccessRightsService {
     }
 
     private List<Product> applyQuantityRestrictions(String organizationId) {
-        Employee loggedInUser = employeeService.getEmployee("pera.peric");
+        Employee loggedInUser = GetLoggedInUser();
         ArrayList<Product> availableProducts = new ArrayList<>();
         QuantityRestriction quantityRestriction =
                 organizationService.getOrganization(loggedInUser.getOrganization())
@@ -185,5 +182,10 @@ public class AccessRightsService {
         retVal.setCrudOperations(approvalRequest.getRequestingRights().getCrudOperations());
         retVal.setQuantityRestriction(approvalRequest.getRequestingRights().getQuantityRestriction());
         return retVal;
+    }
+
+    private Employee GetLoggedInUser() {
+        UserDetails loggedInUserDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return employeeService.getEmployee(loggedInUserDetails.getUsername());
     }
 }

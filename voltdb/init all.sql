@@ -1,3 +1,19 @@
+-- Master Organizations
+CREATE TABLE MasterOrganizations (
+   MasterOrganizationId VARCHAR(64) UNIQUE NOT NULL,
+   Name VARCHAR(32),
+   PRIMARY KEY(MasterOrganizationId)
+);
+CREATE PROCEDURE getAllMasterOrganizations AS SELECT * FROM masterorganizations;
+CREATE PROCEDURE getMasterOrganizations AS SELECT * FROM organizations WHERE MasterOrganizationId=?;
+-- Organizations
+CREATE TABLE Organizations (
+   OrganizationId VARCHAR(64) UNIQUE NOT NULL,
+   Name VARCHAR(32),
+   PRIMARY KEY(OrganizationId)
+);
+CREATE PROCEDURE getAllOrganizations AS SELECT * FROM organizations;
+CREATE PROCEDURE getOrganization AS SELECT * FROM organizations WHERE OrganizationId=?;
 -- Employees
 CREATE TABLE Employees (
    EmployeeId varchar(64) UNIQUE NOT NULL,
@@ -25,14 +41,6 @@ CREATE TABLE Products (
 CREATE PROCEDURE getAllProducts AS SELECT * FROM products;
 CREATE PROCEDURE getProduct AS SELECT * FROM products WHERE ProductId=?;
 CREATE PROCEDURE getProductsByOrganizationId AS SELECT * FROM products WHERE OrganizationId=?;
--- Organizations
-CREATE TABLE Organizations (
-   OrganizationId VARCHAR(64) UNIQUE NOT NULL,
-   Name VARCHAR(32),
-   PRIMARY KEY(OrganizationId)
-);
-CREATE PROCEDURE getAllOrganizations AS SELECT * FROM organizations;
-CREATE PROCEDURE getOrganization AS SELECT * FROM organizations WHERE OrganizationId=?;
 -- External rights
 CREATE TABLE ExternalRights (
    ExternalRightsId VARCHAR(64) UNIQUE NOT NULL,
@@ -59,7 +67,7 @@ CREATE TABLE ApprovalRequests (
    IsRead TINYINT DEFAULT 1,
    IsUpdate TINYINT DEFAULT 0,
    IsDelete TINYINT DEFAULT 0,
-   QuantityRestrictionAmount INTEG
+   QuantityRestrictionAmount INTEGER
    RestrictingCondition VARCHAR(16),
    CONSTRAINT PK_ApprovalRequestId PRIMARY KEY (RequestingOrganizationId, SharingOrganizationId)
 );

@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.authentication.configurers
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -66,10 +67,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and().csrf().disable()
             .headers().frameOptions().disable();
 
-        http.httpBasic()
+       /* http.httpBasic()
             .and()
             .anonymous()
             .and()
-            .antMatcher("/");
+            .antMatcher("/");*/
+
+        http.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
     }
 }
