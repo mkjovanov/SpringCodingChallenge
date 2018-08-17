@@ -38,7 +38,7 @@ public class AccessRightsService {
     private ExternalAccessRightsService externalAccessRightsService;
 
     public EnumSet<CrudOperation> getCurrentUserAccessRights(String organizationId) {
-        Employee loggedInUser = GetLoggedInUser();
+        Employee loggedInUser = getLoggedInUser();
         if (loggedInUser.getOrganization().equals(organizationId)) {
             return loggedInUser.getInternalAccessRights().getCrudOperations();
         }
@@ -97,18 +97,18 @@ public class AccessRightsService {
     }
 
     public boolean isInternalAccessRight(String organizationId) {
-        return GetLoggedInUser().getOrganization().equals(organizationId);
+        return getLoggedInUser().getOrganization().equals(organizationId);
     }
 
     public boolean isInternalOperationAvailable(CrudOperation crudOperation) {
-        return GetLoggedInUser()
+        return getLoggedInUser()
                 .getInternalAccessRights()
                 .getCrudOperations().stream()
                 .anyMatch(c -> c.equals(crudOperation));
     }
 
     public boolean isExternalOperationAvailable(CrudOperation crudOperation, String organizationId) {
-        Employee loggedInUser = GetLoggedInUser();
+        Employee loggedInUser = getLoggedInUser();
         Organization organization = organizationService.getOrganization(loggedInUser.getOrganization());
         if(organization.getExternalAccessRightsList() == null ||
                 organization.getExternalAccessRightsList().isEmpty()) {
@@ -126,7 +126,7 @@ public class AccessRightsService {
     }
 
     private List<Product> applyQuantityRestrictions(String organizationId) {
-        Employee loggedInUser = GetLoggedInUser();
+        Employee loggedInUser = getLoggedInUser();
         ArrayList<Product> availableProducts = new ArrayList<>();
         QuantityRestriction quantityRestriction =
                 organizationService.getOrganization(loggedInUser.getOrganization())
@@ -184,7 +184,7 @@ public class AccessRightsService {
         return retVal;
     }
 
-    private Employee GetLoggedInUser() {
+    public Employee getLoggedInUser() {
         UserDetails loggedInUserDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return employeeService.getEmployee(loggedInUserDetails.getUsername());
     }
