@@ -90,8 +90,8 @@ public class ApprovalRequestVoltDBRepository extends IRepository<ApprovalRequest
                                 requestingRights.getCrudOperations().contains(CrudOperation.Read) == true ? 1 : 0,
                                 requestingRights.getCrudOperations().contains(CrudOperation.Update) == true ? 1 : 0,
                                 requestingRights.getCrudOperations().contains(CrudOperation.Delete) == true ? 1 : 0,
-                                quantityRestriction == null ? null : quantityRestriction.getRestrictedAmount(),
-                                quantityRestriction == null ? null : String.valueOf(quantityRestriction.getRestrictingCondition()));
+                                quantityRestriction == null ? 0 : String.valueOf(quantityRestriction.getRestrictingCondition()),
+                                quantityRestriction == null ? "0" : quantityRestriction.getRestrictedAmount());
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
@@ -129,10 +129,16 @@ public class ApprovalRequestVoltDBRepository extends IRepository<ApprovalRequest
     @Override
     public void delete(String id) {
         ApprovalRequest approvalRequest = get(id);
+        QuantityRestriction quantityRestriction = approvalRequest.getRequestingRights().getQuantityRestriction();
         try {
             client.callProcedure("APPROVALREQUESTS.delete",
                                     approvalRequest.getRequestingOrganization(),
-                                    approvalRequest.getRequestingRights().getSharingOrganization());
+                                    approvalRequest.getRequestingRights().getSharingOrganization(),
+                                    approvalRequest.getRequestingRights().getCrudOperations().contains(CrudOperation.Create) == true ? 1 : 0,
+                                    approvalRequest.getRequestingRights().getCrudOperations().contains(CrudOperation.Read) == true ? 1 : 0,
+                                    approvalRequest.getRequestingRights().getCrudOperations().contains(CrudOperation.Update) == true ? 1 : 0,
+                                    approvalRequest.getRequestingRights().getCrudOperations().contains(CrudOperation.Delete) == true ? 1 : 0,
+                                    quantityRestriction == null ? "0" : approvalRequest.getRequestingRights().getQuantityRestriction().getRestrictingCondition());
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
@@ -179,7 +185,7 @@ public class ApprovalRequestVoltDBRepository extends IRepository<ApprovalRequest
         Integer restrictingAmountDb = (Integer) voltDBApprovalRequest.get("QuantityRestrictionAmount", VoltType.INTEGER);
         String restrictinConditionDb = (String) voltDBApprovalRequest.get("RestrictingCondition", VoltType.STRING);
 
-        if(restrictingAmountDb == null || restrictinConditionDb == null) {
+        if(restrictingAmountDb == 0 || restrictinConditionDb == "") {
             requestingRights.setQuantityRestriction(null);
             approvalRequest.setRequestingRights(requestingRights);
             return approvalRequest;

@@ -52,7 +52,9 @@ CREATE TABLE ExternalRights (
    IsDelete TINYINT DEFAULT 0,
    QuantityRestrictionAmount INTEGER,
    RestrictingCondition VARCHAR(16),
-   CONSTRAINT PK_ExternalRightsId PRIMARY KEY (ReceivingOrganizationId, GivingOrganizationId)
+   CONSTRAINT PK_ExternalRightsId PRIMARY KEY (ReceivingOrganizationId, GivingOrganizationId,
+                                               IsCreate, IsRead, IsUpdate, IsDelete,
+                                               RestrictingCondition)
 );
 CREATE PROCEDURE getAllExternalRights AS SELECT * FROM ExternalRights;
 CREATE PROCEDURE getExternalRights AS SELECT * FROM ExternalRights WHERE ExternalRightsId=?;
@@ -67,9 +69,11 @@ CREATE TABLE ApprovalRequests (
    IsRead TINYINT DEFAULT 1,
    IsUpdate TINYINT DEFAULT 0,
    IsDelete TINYINT DEFAULT 0,
-   QuantityRestrictionAmount INTEGER
+   QuantityRestrictionAmount INTEGER,
    RestrictingCondition VARCHAR(16),
-   CONSTRAINT PK_ApprovalRequestId PRIMARY KEY (RequestingOrganizationId, SharingOrganizationId)
+   CONSTRAINT PK_ApprovalRequestId PRIMARY KEY (RequestingOrganizationId, SharingOrganizationId,
+                                               IsCreate, IsRead, IsUpdate, IsDelete,
+                                               RestrictingCondition)
 );
 CREATE PROCEDURE getAllApprovalRequests AS SELECT * FROM ApprovalRequests;
 CREATE PROCEDURE getApprovalRequest AS SELECT * FROM ApprovalRequests WHERE ApprovalRequestId=?;

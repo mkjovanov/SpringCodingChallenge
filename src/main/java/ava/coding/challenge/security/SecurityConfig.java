@@ -30,7 +30,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private MasterOrganizationService masterOrganizationService;
 
-    // Authentication : User --> Roles
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         List<Employee> allEmployees = (ArrayList<Employee>) employeeService.getAllEmployees().getBody();
         List<Organization> allOrganization = organizationService.getAllOrganizations();
@@ -52,7 +51,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         }
     }
 
-    // Authorization : Role -> Access
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
             .anyRequest().authenticated()
