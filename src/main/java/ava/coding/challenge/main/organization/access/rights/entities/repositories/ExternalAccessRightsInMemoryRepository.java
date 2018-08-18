@@ -14,9 +14,9 @@ import java.util.List;
 public class ExternalAccessRightsInMemoryRepository extends IRepository<ExternalAccessRights> {
 
     public List<ExternalAccessRights> externalAccessRightsList = new ArrayList<>(Arrays.asList(
-            new ExternalAccessRights("1", "b", "c", EnumSet.of(CrudOperation.Read)),
-            new ExternalAccessRights("2", "c", "b", EnumSet.of(CrudOperation.Delete)),
-            new ExternalAccessRights("3", "d", "b", EnumSet.of(CrudOperation.Read))));
+            new ExternalAccessRights("1", "b", "c", CrudOperation.Read),
+            new ExternalAccessRights("2", "c", "b", CrudOperation.Delete),
+            new ExternalAccessRights("3", "d", "b", CrudOperation.Read)));
 
     @Override
     public List<ExternalAccessRights> getAll() {

@@ -4,6 +4,7 @@ import ava.coding.challenge.helpers.NullHelper;
 import ava.coding.challenge.main.organization.access.rights.AccessRightsService;
 import ava.coding.challenge.main.organization.access.rights.entities.CrudOperation;
 import ava.coding.challenge.main.organization.access.rights.entities.access.rights.InternalAccessRights;
+import ava.coding.challenge.main.organization.entities.Organization;
 import ava.coding.challenge.main.product.entities.Product;
 import ava.coding.challenge.main.product.entities.ProductResponse;
 import ava.coding.challenge.main.product.repositories.ProductInMemoryRepository;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -37,8 +39,11 @@ public class ProductService {
         }
 
         List<ProductResponse> productResponses = new ArrayList<>();
-        EnumSet<CrudOperation> accessRightCrudOperations = accessRightsService.getCurrentUserAccessRights(organizationId);
-        availableProducts.forEach(p -> productResponses.add(new ProductResponse(p, accessRightCrudOperations)));
+        for (Iterator<Product> i = availableProducts.iterator(); i.hasNext();) {
+            Product item = i.next();
+            EnumSet<CrudOperation> crudOperations = accessRightsService.getCurrentUserAccessRights(organizationId, item);
+            productResponses.add(new ProductResponse(item, crudOperations));
+        }
 
         return new ResponseEntity(productResponses, HttpStatus.OK);
     }
@@ -49,9 +54,10 @@ public class ProductService {
                     "' is forbidden for this user.",
                     HttpStatus.FORBIDDEN);
         }
+        Product product =  productRepository.get(id);
         ProductResponse productResponse = new ProductResponse(
-                productRepository.get(id),
-                accessRightsService.getCurrentUserAccessRights(organizationId));
+                product,
+                accessRightsService.getCurrentUserAccessRights(organizationId, product));
         return new ResponseEntity(productResponse, HttpStatus.OK);
     }
 

@@ -90,8 +90,8 @@ public class ApprovalRequestVoltDBRepository extends IRepository<ApprovalRequest
                                 requestingRights.getCrudOperations().contains(CrudOperation.Read) == true ? 1 : 0,
                                 requestingRights.getCrudOperations().contains(CrudOperation.Update) == true ? 1 : 0,
                                 requestingRights.getCrudOperations().contains(CrudOperation.Delete) == true ? 1 : 0,
-                                quantityRestriction == null ? 0 : String.valueOf(quantityRestriction.getRestrictingCondition()),
-                                quantityRestriction == null ? "0" : quantityRestriction.getRestrictedAmount());
+                                quantityRestriction == null ? "0" : quantityRestriction.getRestrictedAmount(),
+                                quantityRestriction == null ? 0 : String.valueOf(quantityRestriction.getRestrictingCondition()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
@@ -138,7 +138,7 @@ public class ApprovalRequestVoltDBRepository extends IRepository<ApprovalRequest
                                     approvalRequest.getRequestingRights().getCrudOperations().contains(CrudOperation.Read) == true ? 1 : 0,
                                     approvalRequest.getRequestingRights().getCrudOperations().contains(CrudOperation.Update) == true ? 1 : 0,
                                     approvalRequest.getRequestingRights().getCrudOperations().contains(CrudOperation.Delete) == true ? 1 : 0,
-                                    quantityRestriction == null ? "0" : approvalRequest.getRequestingRights().getQuantityRestriction().getRestrictingCondition());
+                                    quantityRestriction == null ? "0" : approvalRequest.getRequestingRights().getQuantityRestriction().getRestrictingCondition().toString());
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {

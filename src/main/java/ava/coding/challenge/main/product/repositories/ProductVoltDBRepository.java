@@ -119,7 +119,7 @@ public class ProductVoltDBRepository extends IRepository<Product> {
     @Override
     public void delete(String id) {
         try {
-            client.callProcedure("PRODUCT.delete", id);
+            client.callProcedure("PRODUCTS.delete", id);
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {

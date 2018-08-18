@@ -13,6 +13,7 @@ import ava.coding.challenge.main.organization.entities.Organization;
 import ava.coding.challenge.main.product.ProductService;
 import ava.coding.challenge.main.product.entities.Product;
 
+import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,27 +39,41 @@ public class AccessRightsService {
     @Autowired
     private ExternalAccessRightsService externalAccessRightsService;
 
-    public EnumSet<CrudOperation> getCurrentUserAccessRights(String organizationId) {
+    public EnumSet<CrudOperation> getCurrentUserAccessRights(String organizationId, Product accessingProduct) {
         Employee loggedInUser = getLoggedInUser();
         if (loggedInUser.getOrganization().equals(organizationId)) {
             return loggedInUser.getInternalAccessRights().getCrudOperations();
         }
         else {
             Organization loggedInUserOrganization = organizationService.getOrganization(loggedInUser.getOrganization());
-            Organization  accessingOrganization = organizationService.getOrganization(organizationId);
-            return loggedInUserOrganization.getExternalAccessRightsList().stream()
-                    .filter(e -> e.getGivingOrganization().equals(accessingOrganization.getId()))
-                    .findFirst()
-                    .get()
-                    .getCrudOperations();
+            EnumSet<CrudOperation> crudOperations = EnumSet.noneOf(CrudOperation.class);
+
+            List<ExternalAccessRights> crudOperationsList = loggedInUserOrganization.getExternalAccessRightsList();
+            for (Iterator<ExternalAccessRights> i = crudOperationsList.iterator(); i.hasNext();) {
+                ExternalAccessRights item = i.next();
+                if(item.getQuantityRestriction() != null) {
+                    if ((item.getQuantityRestriction().getRestrictingCondition().equals(RestrictingCondition.LessThan) &&
+                        accessingProduct.getStock() < item.getQuantityRestriction().getRestrictedAmount()) ||
+                        (item.getQuantityRestriction().getRestrictingCondition().equals(RestrictingCondition.GreaterThan) &&
+                                accessingProduct.getStock() > item.getQuantityRestriction().getRestrictedAmount())) {
+                        crudOperations.add(item.getCrudOperation());
+                    }
+                }
+            }
+
+            return crudOperations;
         }
     }
 
     public void approveRequest(String id) {
         ApprovalRequest approvalRequest = approvalRequestService.getApprovalRequest(id);
-        ExternalAccessRights externalAccessRights = initializeExternalRights(approvalRequest);
+        EnumSet<CrudOperation> crudOperations = approvalRequest.getRequestingRights().getCrudOperations();
+        List<ExternalAccessRights> externalAccessRights = initializeExternalRights(approvalRequest);
 
-        externalAccessRightsService.addExternalAccessRights(externalAccessRights);
+        for (Iterator<ExternalAccessRights> i = externalAccessRights.iterator(); i.hasNext();) {
+            ExternalAccessRights item = i.next();
+            externalAccessRightsService.addExternalAccessRights(item);
+        }
         approvalRequestService.deleteApprovalRequest(id);
     }
 
@@ -120,11 +136,7 @@ public class AccessRightsService {
         return isExternalRightsMatch &&
                 organization.getExternalAccessRightsList().stream()
                 .filter(x -> x.getGivingOrganization().equals(organizationId) &&
-                             x.getCrudOperations().stream().anyMatch(y -> y.equals(crudOperation)))
-                .count() != 0;
-                /*.findFirst().get()
-                .getCrudOperations().stream()
-                .anyMatch(y -> y.equals(crudOperation))*/
+                             x.getCrudOperation().equals(crudOperation)).count() != 0;
     }
 
     private List<Product> applyQuantityRestrictions(String organizationId) {
@@ -177,13 +189,27 @@ public class AccessRightsService {
                 .collect(Collectors.toList());
     }
 
-    private ExternalAccessRights initializeExternalRights(ApprovalRequest approvalRequest) {
-        ExternalAccessRights retVal = new ExternalAccessRights();
-        retVal.setReceivingOrganization(approvalRequest.getRequestingOrganization());
-        retVal.setGivingOrganization(approvalRequest.getRequestingRights().getSharingOrganization());
-        retVal.setCrudOperations(approvalRequest.getRequestingRights().getCrudOperations());
-        retVal.setQuantityRestriction(approvalRequest.getRequestingRights().getQuantityRestriction());
-        return retVal;
+    private List<ExternalAccessRights> initializeExternalRights(ApprovalRequest approvalRequest) {
+
+        List<ExternalAccessRights> externalAccessRightsList = new ArrayList<>();
+        EnumSet<CrudOperation> crudOperationsEnum = approvalRequest.getRequestingRights().getCrudOperations();
+        List<CrudOperation> crudOperationsList = new ArrayList<>();
+
+        for(CrudOperation crudOperation : crudOperationsEnum) {
+            crudOperationsList.add(crudOperation);
+        }
+
+        for (Iterator<CrudOperation> i = crudOperationsList.iterator(); i.hasNext();) {
+            ExternalAccessRights externalAccessRight = new ExternalAccessRights();
+            externalAccessRight.setReceivingOrganization(approvalRequest.getRequestingOrganization());
+            externalAccessRight.setGivingOrganization(approvalRequest.getRequestingRights().getSharingOrganization());
+            externalAccessRight.setQuantityRestriction(approvalRequest.getRequestingRights().getQuantityRestriction());
+            CrudOperation item = i.next();
+            externalAccessRight.setCrudOperation(item);
+            externalAccessRightsList.add(externalAccessRight);
+        }
+
+        return externalAccessRightsList;
     }
 
     public Employee getLoggedInUser() {

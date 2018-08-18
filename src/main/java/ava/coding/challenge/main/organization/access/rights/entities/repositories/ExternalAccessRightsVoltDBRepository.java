@@ -97,15 +97,11 @@ public class ExternalAccessRightsVoltDBRepository extends IRepository<ExternalAc
                 newEntity.setId(UUID.randomUUID().toString());
             }
             QuantityRestriction quantityRestriction = newEntity.getQuantityRestriction();
-            EnumSet<CrudOperation> crudOperations = newEntity.getCrudOperations();
             client.callProcedure("EXTERNALRIGHTS.upsert",
                     newEntity.getId(),
                     newEntity.getReceivingOrganization(),
                     newEntity.getGivingOrganization(),
-                    crudOperations.contains(CrudOperation.Create) == true ? 1 : 0,
-                    crudOperations.contains(CrudOperation.Read) == true ? 1 : 0,
-                    crudOperations.contains(CrudOperation.Update) == true ? 1 : 0,
-                    crudOperations.contains(CrudOperation.Delete) == true ? 1 : 0,
+                    newEntity.getCrudOperation().toString(),
                     quantityRestriction == null ? null : quantityRestriction.getRestrictedAmount(),
                     quantityRestriction == null ? null : String.valueOf(quantityRestriction.getRestrictingCondition()));
         } catch (Exception e) {
@@ -123,15 +119,11 @@ public class ExternalAccessRightsVoltDBRepository extends IRepository<ExternalAc
                 updatedEntity.setId(UUID.randomUUID().toString());
             }
             QuantityRestriction quantityRestriction = updatedEntity.getQuantityRestriction();
-            EnumSet<CrudOperation> crudOperations = updatedEntity.getCrudOperations();
             client.callProcedure("EXTERNALRIGHTS.update",
                     updatedEntity.getId(),
                     updatedEntity.getReceivingOrganization(),
                     updatedEntity.getGivingOrganization(),
-                    crudOperations.contains(CrudOperation.Create) == true ? 1 : 0,
-                    crudOperations.contains(CrudOperation.Read) == true ? 1 : 0,
-                    crudOperations.contains(CrudOperation.Update) == true ? 1 : 0,
-                    crudOperations.contains(CrudOperation.Delete) == true ? 1 : 0,
+                    updatedEntity.getCrudOperation(),
                     quantityRestriction == null ? null : quantityRestriction.getRestrictedAmount(),
                     quantityRestriction == null ? null : String.valueOf(quantityRestriction.getRestrictingCondition()),
                     id);
@@ -149,7 +141,8 @@ public class ExternalAccessRightsVoltDBRepository extends IRepository<ExternalAc
         try {
             client.callProcedure("EXTERNALRIGHTS.delete",
                                     externalAccessRights.getGivingOrganization(),
-                                    externalAccessRights.getReceivingOrganization());
+                                    externalAccessRights.getReceivingOrganization(),
+                                    externalAccessRights.getCrudOperation());
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
@@ -174,21 +167,7 @@ public class ExternalAccessRightsVoltDBRepository extends IRepository<ExternalAc
         externalAccessRights.setId((String) voltDBExternalAccessRights.get("ExternalRightsId", VoltType.STRING));
         externalAccessRights.setReceivingOrganization((String) voltDBExternalAccessRights.get("ReceivingOrganizationId", VoltType.STRING));
         externalAccessRights.setGivingOrganization((String) voltDBExternalAccessRights.get("GivingOrganizationId", VoltType.STRING));
-
-        EnumSet<CrudOperation> crudOperations = EnumSet.noneOf(CrudOperation.class);
-        if((Byte) voltDBExternalAccessRights.get("IsCreate", VoltType.TINYINT) == 1 ? true : false){
-            crudOperations.add(CrudOperation.Create);
-        }
-        if((Byte) voltDBExternalAccessRights.get("IsRead", VoltType.TINYINT) == 1 ? true : false) {
-            crudOperations.add(CrudOperation.Read);
-        }
-        if((Byte) voltDBExternalAccessRights.get("IsUpdate", VoltType.TINYINT) == 1 ? true : false) {
-            crudOperations.add(CrudOperation.Update);
-        }
-        if((Byte) voltDBExternalAccessRights.get("IsDelete", VoltType.TINYINT) == 1 ? true : false){
-            crudOperations.add(CrudOperation.Delete);
-        }
-        externalAccessRights.setCrudOperations(crudOperations);
+        externalAccessRights.setCrudOperation(CrudOperation.valueOf((String) voltDBExternalAccessRights.get("CrudOperation", VoltType.STRING)));
 
         Integer restrictingAmountDb = (Integer) voltDBExternalAccessRights.get("QuantityRestrictionAmount", VoltType.INTEGER);
         String restrictingConditionDb = (String) voltDBExternalAccessRights.get("RestrictingCondition", VoltType.STRING);

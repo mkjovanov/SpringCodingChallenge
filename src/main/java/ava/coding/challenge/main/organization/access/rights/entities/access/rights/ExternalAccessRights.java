@@ -6,28 +6,29 @@ import ava.coding.challenge.repository.IEntity;
 
 import java.util.EnumSet;
 
-public class ExternalAccessRights extends AccessRightsBase implements IEntity {
+public class ExternalAccessRights implements IEntity {
 
     private String id;
     private String receivingOrganization;
     private String givingOrganization;
+    protected CrudOperation crudOperation;
     private QuantityRestriction quantityRestriction;
 
     public ExternalAccessRights() { }
     public ExternalAccessRights(String id, String receivingOrganization, String givingOrganization) {
-        this(id, receivingOrganization, givingOrganization, EnumSet.of(CrudOperation.Read), null);
+        this(id, receivingOrganization, givingOrganization, CrudOperation.Read, null);
     }
     public ExternalAccessRights(String id, String receivingOrganization, String givingOrganization,
-                                EnumSet<CrudOperation> crudOperationSet) {
-        this(id, receivingOrganization, givingOrganization, crudOperationSet, null);
+                                CrudOperation crudOperation) {
+        this(id, receivingOrganization, givingOrganization, crudOperation, null);
     }
     public ExternalAccessRights(String id, String receivingOrganization, String givingOrganization,
-                                EnumSet<CrudOperation> crudOperationSet, QuantityRestriction quantityRestriction) {
+                                CrudOperation crudOperation, QuantityRestriction quantityRestriction) {
         this.id = id;
         this.receivingOrganization = receivingOrganization;
         this.givingOrganization = givingOrganization;
         this.quantityRestriction = quantityRestriction;
-        super.crudOperations = crudOperationSet;
+        this.crudOperation = crudOperation;
     }
 
     public String getId() {
@@ -52,6 +53,14 @@ public class ExternalAccessRights extends AccessRightsBase implements IEntity {
 
     public void setGivingOrganization(String givingOrganization) {
         this.givingOrganization = givingOrganization;
+    }
+
+    public CrudOperation getCrudOperation() {
+        return crudOperation;
+    }
+
+    public void setCrudOperation(CrudOperation crudOperation) {
+        this.crudOperation = crudOperation;
     }
 
     public QuantityRestriction getQuantityRestriction() {

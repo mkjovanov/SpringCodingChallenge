@@ -46,15 +46,10 @@ CREATE TABLE ExternalRights (
    ExternalRightsId VARCHAR(64) UNIQUE NOT NULL,
    ReceivingOrganizationId VARCHAR(64) NOT NULL,
    GivingOrganizationId VARCHAR(64) NOT NULL,
-   IsCreate TINYINT DEFAULT 0,
-   IsRead TINYINT DEFAULT 0,
-   IsUpdate TINYINT DEFAULT 0,
-   IsDelete TINYINT DEFAULT 0,
+   CrudOperation VARCHAR(16) DEFAULT 'Create' NOT NULL,
    QuantityRestrictionAmount INTEGER,
    RestrictingCondition VARCHAR(16),
-   CONSTRAINT PK_ExternalRightsId PRIMARY KEY (ReceivingOrganizationId, GivingOrganizationId,
-                                               IsCreate, IsRead, IsUpdate, IsDelete,
-                                               RestrictingCondition)
+   CONSTRAINT PK_ExternalRightsId PRIMARY KEY (ReceivingOrganizationId, GivingOrganizationId, CrudOperation)
 );
 CREATE PROCEDURE getAllExternalRights AS SELECT * FROM ExternalRights;
 CREATE PROCEDURE getExternalRights AS SELECT * FROM ExternalRights WHERE ExternalRightsId=?;
