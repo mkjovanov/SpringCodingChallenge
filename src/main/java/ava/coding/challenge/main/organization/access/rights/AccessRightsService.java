@@ -111,7 +111,7 @@ public class AccessRightsService {
         Employee loggedInUser = getLoggedInUser();
         Organization organization = organizationService.getOrganization(loggedInUser.getOrganization());
         if(organization.getExternalAccessRightsList() == null ||
-                organization.getExternalAccessRightsList().isEmpty()) {
+           organization.getExternalAccessRightsList().isEmpty()) {
             return false;
         }
 
@@ -119,10 +119,12 @@ public class AccessRightsService {
                 .anyMatch(x -> x.getGivingOrganization().equals(organizationId));
         return isExternalRightsMatch &&
                 organization.getExternalAccessRightsList().stream()
-                .filter(x -> x.getGivingOrganization().equals(organizationId))
-                .findFirst().get()
+                .filter(x -> x.getGivingOrganization().equals(organizationId) &&
+                             x.getCrudOperations().stream().anyMatch(y -> y.equals(crudOperation)))
+                .count() != 0;
+                /*.findFirst().get()
                 .getCrudOperations().stream()
-                .anyMatch(y -> y.equals(crudOperation));
+                .anyMatch(y -> y.equals(crudOperation))*/
     }
 
     private List<Product> applyQuantityRestrictions(String organizationId) {

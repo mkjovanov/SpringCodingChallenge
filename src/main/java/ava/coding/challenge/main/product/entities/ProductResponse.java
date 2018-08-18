@@ -11,6 +11,7 @@ public class ProductResponse {
 
     public ProductResponse() {}
     public ProductResponse(Product product, EnumSet<CrudOperation> accessRightsCrudOperations) {
+        accessRightsCrudOperations.removeIf(crud -> crud.equals(CrudOperation.Create));
         this.product = product;
         this.accessRightsCrudOperations = accessRightsCrudOperations;
     }
