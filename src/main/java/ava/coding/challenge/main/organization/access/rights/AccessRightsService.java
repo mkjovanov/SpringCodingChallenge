@@ -121,7 +121,7 @@ public class AccessRightsService {
         if (!isInternalAccessRight(organizationId) &&
             isInternalOperationAvailable(CrudOperation.Read) &&
             isExternalOperationAvailable(CrudOperation.Read, organizationId)) {
-            availableProducts.addAll(applyQuantityRestrictions(organizationId));
+            availableProducts.addAll(applyQuantityRestrictions(organizationId, CrudOperation.Read));
         }
         return availableProducts;
     }
@@ -177,13 +177,14 @@ public class AccessRightsService {
                 product.getStock() > quantityRestriction.getRestrictedAmount();
     }
 
-    private List<Product> applyQuantityRestrictions(String organizationId) {
+    private List<Product> applyQuantityRestrictions(String organizationId, CrudOperation crudOperation) {
         Employee loggedInUser = getLoggedInUser();
         ArrayList<Product> availableProducts = new ArrayList<>();
         QuantityRestriction quantityRestriction =
                 organizationService.getOrganization(loggedInUser.getOrganization())
                         .getExternalAccessRightsList().stream()
-                        .filter(x -> x.getGivingOrganization().equals(organizationId))
+                        .filter(x -> x.getGivingOrganization().equals(organizationId) &&
+                                x.getCrudOperation().equals(crudOperation))
                         .findFirst().get().getQuantityRestriction();
 
         if (isQuantityRestrictionAvailable(quantityRestriction)) {
