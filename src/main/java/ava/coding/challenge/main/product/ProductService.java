@@ -49,7 +49,7 @@ public class ProductService {
     }
 
     public ResponseEntity<Product> getProduct(String organizationId, String id) {
-        if (!accessRightsService.isCrudOperationAvailable(CrudOperation.Read, organizationId)) {
+        if (!accessRightsService.isCrudOperationByProductAvailable(CrudOperation.Read, organizationId, id)) {
             return new ResponseEntity("Reading product from organization: '" + organizationId +
                     "' is forbidden for this user.",
                     HttpStatus.FORBIDDEN);
@@ -72,7 +72,7 @@ public class ProductService {
     }
 
     public ResponseEntity updateProduct(String id, String organizationId, Product updatedProduct) {
-        if (!accessRightsService.isCrudOperationAvailable(CrudOperation.Update, organizationId)) {
+        if (!accessRightsService.isCrudOperationByProductAvailable(CrudOperation.Update, organizationId, id)) {
             return new ResponseEntity("Updating product from organization: '" + organizationId + "' is forbidden for this user", HttpStatus.FORBIDDEN);
         }
 
@@ -83,7 +83,7 @@ public class ProductService {
     }
 
     public ResponseEntity deleteProduct(String id, String organizationId) {
-        if (!accessRightsService.isCrudOperationAvailable(CrudOperation.Delete, organizationId)) {
+        if (!accessRightsService.isCrudOperationByProductAvailable(CrudOperation.Delete, organizationId, id)) {
             return new ResponseEntity("Deleting product from organization: '" + organizationId + "' is forbidden for this user", HttpStatus.FORBIDDEN);
         }
         productRepository.delete(id);

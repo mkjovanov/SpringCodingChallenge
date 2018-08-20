@@ -13,7 +13,6 @@ import ava.coding.challenge.main.organization.entities.Organization;
 import ava.coding.challenge.main.product.ProductService;
 import ava.coding.challenge.main.product.entities.Product;
 
-import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -82,6 +81,11 @@ public class AccessRightsService {
                 (isExternalOperationAvailable(crudOperation, organizationId));
     }
 
+    public boolean isCrudOperationByProductAvailable(CrudOperation crudOperation, String organizationId, String productId) {
+        return (isInternalAccessRight(organizationId) && isInternalOperationAvailable(crudOperation)) ||
+                (isExternalOperationByProductAvailable(crudOperation, organizationId, productId));
+    }
+
     public List<Product> filterByAccessRights(String organizationId) {
         ArrayList<Product> filteredProducts = new ArrayList<>();
         if (isInternalAccessRight(organizationId) &&
@@ -127,16 +131,40 @@ public class AccessRightsService {
         Employee loggedInUser = getLoggedInUser();
         Organization organization = organizationService.getOrganization(loggedInUser.getOrganization());
         if(organization.getExternalAccessRightsList() == null ||
-           organization.getExternalAccessRightsList().isEmpty()) {
+                organization.getExternalAccessRightsList().isEmpty()) {
             return false;
         }
 
-        boolean isExternalRightsMatch = organization.getExternalAccessRightsList().stream()
-                .anyMatch(x -> x.getGivingOrganization().equals(organizationId));
-        return isExternalRightsMatch &&
-                organization.getExternalAccessRightsList().stream()
+        return organization.getExternalAccessRightsList().stream()
                 .filter(x -> x.getGivingOrganization().equals(organizationId) &&
-                             x.getCrudOperation().equals(crudOperation)).count() != 0;
+                            x.getCrudOperation().equals(crudOperation)).count() != 0;
+    }
+
+    public boolean isExternalOperationByProductAvailable(CrudOperation crudOperation, String organizationId, String productId) {
+        Employee loggedInUser = getLoggedInUser();
+        Organization organization = organizationService.getOrganization(loggedInUser.getOrganization());
+        if(!loggedInUser.getInternalAccessRights().getCrudOperations().contains(crudOperation) ||
+            organization.getExternalAccessRightsList() == null ||
+            organization.getExternalAccessRightsList().isEmpty()) {
+            return false;
+        }
+
+        ExternalAccessRights externalAccessRights =
+                        organization.getExternalAccessRightsList().stream()
+                        .filter(x -> x.getGivingOrganization().equals(organizationId) &&
+                        x.getCrudOperation().equals(crudOperation)).findFirst().get();
+
+        return externalAccessRights.getQuantityRestriction() == null ||
+                isQuantityRestrictionSatisfied(externalAccessRights, productId);
+    }
+
+    private boolean isQuantityRestrictionSatisfied(ExternalAccessRights externalAccessRights, String productId) {
+        QuantityRestriction quantityRestriction = externalAccessRights.getQuantityRestriction();
+        Product product = productService.getProductBypassAccessRights(productId);
+        boolean isLessRestriction = quantityRestriction.getRestrictingCondition().equals(RestrictingCondition.LessThan);
+
+        return (isLessRestriction && product.getStock() < quantityRestriction.getRestrictedAmount()) ||
+                product.getStock() > quantityRestriction.getRestrictedAmount();
     }
 
     private List<Product> applyQuantityRestrictions(String organizationId) {
