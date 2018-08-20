@@ -50,18 +50,28 @@ public class AccessRightsService {
             List<ExternalAccessRights> crudOperationsList = loggedInUserOrganization.getExternalAccessRightsList();
             for (Iterator<ExternalAccessRights> i = crudOperationsList.iterator(); i.hasNext();) {
                 ExternalAccessRights item = i.next();
-                if(item.getQuantityRestriction() != null) {
-                    if ((item.getQuantityRestriction().getRestrictingCondition().equals(RestrictingCondition.LessThan) &&
-                        accessingProduct.getStock() < item.getQuantityRestriction().getRestrictedAmount()) ||
-                        (item.getQuantityRestriction().getRestrictingCondition().equals(RestrictingCondition.GreaterThan) &&
-                                accessingProduct.getStock() > item.getQuantityRestriction().getRestrictedAmount())) {
-                        crudOperations.add(item.getCrudOperation());
+                boolean isCrudOperationInterallyAvailable =
+                        loggedInUser.getInternalAccessRights().getCrudOperations().contains(item.getCrudOperation());
+                if(item.getQuantityRestriction() == null && isCrudOperationInterallyAvailable) {
+                    crudOperations.add(item.getCrudOperation());
+                } else if (isCrudOperationInterallyAvailable &&
+                        (isLessThanConditionSatisfied(item, accessingProduct) ||
+                           isGreaterThanConditionSatisfied(item, accessingProduct))) {
+                            crudOperations.add(item.getCrudOperation());
                     }
                 }
-            }
-
             return crudOperations;
         }
+    }
+
+    boolean isLessThanConditionSatisfied(ExternalAccessRights externalAccessRights, Product accessingProduct) {
+        return externalAccessRights.getQuantityRestriction().getRestrictingCondition().equals(RestrictingCondition.LessThan) &&
+                accessingProduct.getStock() < externalAccessRights.getQuantityRestriction().getRestrictedAmount();
+    }
+
+    boolean isGreaterThanConditionSatisfied(ExternalAccessRights externalAccessRights, Product accessingProduct) {
+        return (externalAccessRights.getQuantityRestriction().getRestrictingCondition().equals(RestrictingCondition.GreaterThan) &&
+                accessingProduct.getStock() > externalAccessRights.getQuantityRestriction().getRestrictedAmount());
     }
 
     public void approveRequest(String id) {
