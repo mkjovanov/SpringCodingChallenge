@@ -64,26 +64,21 @@ public class AccessRightsService {
         }
     }
 
-    boolean isLessThanConditionSatisfied(ExternalAccessRights externalAccessRights, Product accessingProduct) {
-        return externalAccessRights.getQuantityRestriction().getRestrictingCondition().equals(RestrictingCondition.LessThan) &&
-                accessingProduct.getStock() < externalAccessRights.getQuantityRestriction().getRestrictedAmount();
-    }
-
-    boolean isGreaterThanConditionSatisfied(ExternalAccessRights externalAccessRights, Product accessingProduct) {
-        return (externalAccessRights.getQuantityRestriction().getRestrictingCondition().equals(RestrictingCondition.GreaterThan) &&
-                accessingProduct.getStock() > externalAccessRights.getQuantityRestriction().getRestrictedAmount());
-    }
-
     public void approveRequest(String id) {
         ApprovalRequest approvalRequest = approvalRequestService.getApprovalRequest(id);
-        EnumSet<CrudOperation> crudOperations = approvalRequest.getRequestingRights().getCrudOperations();
         List<ExternalAccessRights> externalAccessRights = initializeExternalRights(approvalRequest);
 
         for (Iterator<ExternalAccessRights> i = externalAccessRights.iterator(); i.hasNext();) {
             ExternalAccessRights item = i.next();
             externalAccessRightsService.addExternalAccessRights(item);
         }
+
         approvalRequestService.deleteApprovalRequest(id);
+    }
+
+    public Employee getLoggedInUser() {
+        UserDetails loggedInUserDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return employeeService.getEmployee(loggedInUserDetails.getUsername());
     }
 
     public boolean isCrudOperationAvailable(CrudOperation crudOperation, String organizationId) {
@@ -168,6 +163,16 @@ public class AccessRightsService {
                 isQuantityRestrictionSatisfied(externalAccessRights, productId);
     }
 
+    private boolean isLessThanConditionSatisfied(ExternalAccessRights externalAccessRights, Product accessingProduct) {
+        return externalAccessRights.getQuantityRestriction().getRestrictingCondition().equals(RestrictingCondition.LessThan) &&
+                accessingProduct.getStock() < externalAccessRights.getQuantityRestriction().getRestrictedAmount();
+    }
+
+    private boolean isGreaterThanConditionSatisfied(ExternalAccessRights externalAccessRights, Product accessingProduct) {
+        return (externalAccessRights.getQuantityRestriction().getRestrictingCondition().equals(RestrictingCondition.GreaterThan) &&
+                accessingProduct.getStock() > externalAccessRights.getQuantityRestriction().getRestrictedAmount());
+    }
+
     private boolean isQuantityRestrictionSatisfied(ExternalAccessRights externalAccessRights, String productId) {
         QuantityRestriction quantityRestriction = externalAccessRights.getQuantityRestriction();
         Product product = productService.getProductBypassAccessRights(productId);
@@ -175,6 +180,30 @@ public class AccessRightsService {
 
         return (isLessRestriction && product.getStock() < quantityRestriction.getRestrictedAmount()) ||
                 product.getStock() > quantityRestriction.getRestrictedAmount();
+    }
+
+    private boolean isQuantityRestrictionAvailable(QuantityRestriction quantityRestriction) {
+        return quantityRestriction != null;
+    }
+
+    private boolean isQuantityRestrictionLessThan(QuantityRestriction quantityRestriction) {
+        return quantityRestriction.getRestrictingCondition().equals(RestrictingCondition.LessThan);
+    }
+
+    private boolean isQuantityRestrictionGreaterThan(QuantityRestriction quantityRestriction) {
+        return quantityRestriction.getRestrictingCondition().equals(RestrictingCondition.GreaterThan);
+    }
+
+    private List<Product> filterByLessThanQuantity(String organizationId, Integer restrictedAmount) {
+        return productService.getAllProductsBypassAccessRights(organizationId).stream()
+                .filter(p -> p.getStock() < restrictedAmount)
+                .collect(Collectors.toList());
+    }
+
+    private List<Product> filterByGreaterThanQuantity(String organizationId, Integer restrictedAmount) {
+        return productService.getAllProductsBypassAccessRights(organizationId).stream()
+                .filter(p -> p.getStock() > restrictedAmount)
+                .collect(Collectors.toList());
     }
 
     private List<Product> applyQuantityRestrictions(String organizationId, CrudOperation crudOperation) {
@@ -188,11 +217,11 @@ public class AccessRightsService {
                         .findFirst().get().getQuantityRestriction();
 
         if (isQuantityRestrictionAvailable(quantityRestriction)) {
-            if (isQuantityLessThan(quantityRestriction)) {
+            if (isQuantityRestrictionLessThan(quantityRestriction)) {
                 availableProducts
                         .addAll(filterByLessThanQuantity(organizationId, quantityRestriction.getRestrictedAmount()));
             }
-            else if (isQuantityGreaterThan(quantityRestriction)) {
+            else if (isQuantityRestrictionGreaterThan(quantityRestriction)) {
                 availableProducts
                         .addAll(filterByGreaterThanQuantity(organizationId, quantityRestriction.getRestrictedAmount()));
             }
@@ -202,30 +231,6 @@ public class AccessRightsService {
         }
 
         return availableProducts;
-    }
-
-    private boolean isQuantityRestrictionAvailable(QuantityRestriction quantityRestriction) {
-        return quantityRestriction != null;
-    }
-
-    private boolean isQuantityLessThan(QuantityRestriction quantityRestriction) {
-        return quantityRestriction.getRestrictingCondition().equals(RestrictingCondition.LessThan);
-    }
-
-    private boolean isQuantityGreaterThan(QuantityRestriction quantityRestriction) {
-        return quantityRestriction.getRestrictingCondition().equals(RestrictingCondition.GreaterThan);
-    }
-
-    private List<Product> filterByLessThanQuantity(String organizationId, Integer restrictedAmmount) {
-        return productService.getAllProductsBypassAccessRights(organizationId).stream()
-                .filter(p -> p.getStock() < restrictedAmmount)
-                .collect(Collectors.toList());
-    }
-
-    private List<Product> filterByGreaterThanQuantity(String organizationId, Integer restrictedAmmount) {
-        return productService.getAllProductsBypassAccessRights(organizationId).stream()
-                .filter(p -> p.getStock() > restrictedAmmount)
-                .collect(Collectors.toList());
     }
 
     private List<ExternalAccessRights> initializeExternalRights(ApprovalRequest approvalRequest) {
@@ -249,10 +254,5 @@ public class AccessRightsService {
         }
 
         return externalAccessRightsList;
-    }
-
-    public Employee getLoggedInUser() {
-        UserDetails loggedInUserDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return employeeService.getEmployee(loggedInUserDetails.getUsername());
     }
 }
